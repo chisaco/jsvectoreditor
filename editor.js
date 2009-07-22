@@ -16,15 +16,16 @@ function VectorEditor(elem, width, height){
     this.draw = Raphael(elem, width, height);
     
     this.onHitXY = [0,0]
+    this.tmpXY = [0,0]
     
     this.fill = "#f00"; //red
     this.stroke = "#000"; //black
     
     this.mode = "select";
-    
     this.selectbox = null;
-    
     this.selected = []
+    
+    this.action = "";
     
     this.shapes = []
     this.trackers = []
@@ -42,10 +43,32 @@ VectorEditor.prototype.setMode = function(mode){
 
 VectorEditor.prototype.unselect = function(){
   this.selected = [];
+  this.removeTracker();
+}
+
+VectorEditor.prototype.removeTracker = function(){
   for(var i = 0; i < this.trackers.length; i++){
     this.trackers[i].remove();
   }
   this.trackers = []
+}
+
+VectorEditor.prototype.moveTracker = function(x, y){
+  for(var i = 0; i < this.trackers.length; i++){
+    this.trackers[i].attr("x", this.trackers[i].attr("x") + x);
+    this.trackers[i].attr("y", this.trackers[i].attr("y") + y);
+  }
+}
+
+VectorEditor.prototype.selectAdd = function(shape){
+  this.selected.push(shape)
+  this.showGroupTracker(shape)
+}
+
+VectorEditor.prototype.select = function(shape){
+  this.unselect()
+  this.selected = [shape]
+  this.showTracker(shape)
 }
 
 VectorEditor.prototype.resize = function(object, width, height, x, y){
@@ -95,8 +118,9 @@ VectorEditor.prototype.onMouseDown = function(event){
               "stroke": "#007fff"});
     }else if(target.shape_object){
       //select target
-      target.shape_object.attr("fill", "red")
-      console.log(target)
+      this.select(target.shape_object);
+      this.action = "move";
+      this.tmpXY = [target.shape_object.attr("x") - x,target.shape_object.attr("y") - y]
     }
   }else if(this.selected.length == 0){
     var shape = null;
@@ -142,12 +166,24 @@ VectorEditor.prototype.drawGrid = function(){
   this.draw.drawGrid(0, 0, 480, 272, 10, 10, "blue").toBack()
 }
 
+VectorEditor.prototype.move = function(shape, x, y){
+  shape.attr({x: x, y: y})
+}
+
 VectorEditor.prototype.onMouseMove = function(event){
   var x = event.clientX,
       y = event.clientY
       
-  if(this.mode == "select" && this.selectbox){
-    this.resize(this.selectbox, x - this.onHitXY[0], y - this.onHitXY[1], this.onHitXY[0], this.onHitXY[1])
+  if(this.mode == "select"){
+    if(this.selectbox){
+      this.resize(this.selectbox, x - this.onHitXY[0], y - this.onHitXY[1], this.onHitXY[0], this.onHitXY[1])
+    }else{
+      if(this.action == "move"){
+        for(var i = 0; i < this.selected.length; i++){
+          this.move(this.selected[i],  x + this.tmpXY[0], y + this.tmpXY[1])
+        }
+      }
+    }
   }else if(this.selected.length == 1){
     if(this.mode == "rect"){
       this.resize(this.selected[0], x - this.onHitXY[0], y - this.onHitXY[1], this.onHitXY[0], this.onHitXY[1])
@@ -207,6 +243,8 @@ VectorEditor.prototype.showTracker = function(shape){
   }
 }
 
+
+
 VectorEditor.prototype.showGroupTracker = function(shape){
   var tracker = this.draw.set();
   var box = shape.getBBox();
@@ -225,27 +263,31 @@ VectorEditor.prototype.onDblClick = function(event){
 }
 
 VectorEditor.prototype.onMouseUp = function(event){
-  if(this.mode == "select" && this.selectbox){
-    var sbox = this.selectbox.getBBox()
-    for(var i = 0; i < this.shapes.length; i++){
-      if(this.rectsIntersect(this.shapes[i].getBBox(), sbox)){
-        this.selected.push(this.shapes[i])
-        //this.shapes[i].attr("fill","#007fff")
-        //this.showGroupTracker(this.shapes[i])
+  if(this.mode == "select"){
+    if(this.selectbox){
+      var sbox = this.selectbox.getBBox()
+      for(var i = 0; i < this.shapes.length; i++){
+        if(this.rectsIntersect(this.shapes[i].getBBox(), sbox)){
+          this.selected.push(this.shapes[i])
+          //this.shapes[i].attr("fill","#007fff")
+          //this.showGroupTracker(this.shapes[i])
+        }
       }
-    }
-    
-    if(this.selected.length == 1){
-      this.showTracker(this.selected[0])
-    }else if(this.selected.length > 1){
-      for(var i = 0; i < this.selected.length; i++){
-        this.showGroupTracker(this.selected[i])
+      
+      if(this.selected.length == 1){
+        this.showTracker(this.selected[0])
+      }else if(this.selected.length > 1){
+        for(var i = 0; i < this.selected.length; i++){
+          this.showGroupTracker(this.selected[i])
+        }
       }
-    }
-    this.selectbox.remove()
-    this.selectbox = null;
-    if(this.selected.length == 0){
-      this.unselect()
+      this.selectbox.remove()
+      this.selectbox = null;
+      if(this.selected.length == 0){
+        this.unselect()
+      }
+    }else{
+      this.action = ""
     }
   }else if(this.mode == "rect"){
     this.unselect()
