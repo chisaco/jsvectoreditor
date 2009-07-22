@@ -16,6 +16,7 @@ function VectorEditor(elem, width, height){
     this.draw = Raphael(elem, width, height);
     
     this.onHitXY = [0,0]
+    this.offsetXY = [0,0]
     this.tmpXY = [0,0]
     
     this.fill = "#f00"; //red
@@ -26,6 +27,8 @@ function VectorEditor(elem, width, height){
     this.selected = []
     
     this.action = "";
+    
+    
     
     this.shapes = []
     this.trackers = []
@@ -55,8 +58,12 @@ VectorEditor.prototype.removeTracker = function(){
 
 VectorEditor.prototype.moveTracker = function(x, y){
   for(var i = 0; i < this.trackers.length; i++){
-    this.trackers[i].attr("x", this.trackers[i].attr("x") + x);
-    this.trackers[i].attr("y", this.trackers[i].attr("y") + y);
+    var el = this.trackers[i]
+    for(var k = 0; k < el.length; k++){
+      var box = el[k].getBBox()
+      el[k].attr("x", box.x + x);
+      el[k].attr("y", box.y + y);
+    }
   }
 }
 
@@ -106,21 +113,26 @@ VectorEditor.prototype.onMouseDown = function(event){
       y = event.clientY,
       target = event.target
       
-  this.onHitXY = [x,y]
+  this.tmpXY = this.onHitXY = [x,y]
   
   if(this.mode == "select" && !this.selectbox){
-    this.selected = []
     if(target == this.draw.canvas){
+      this.unselect();
       this.selectbox = this.draw.rect(x, y, 0, 0)
         .attr({"fill-opacity": 0.15, 
               "stroke-opacity": 0.5, 
               "fill": "#007fff",
               "stroke": "#007fff"});
     }else if(target.shape_object){
-      //select target
-      this.select(target.shape_object);
-      this.action = "move";
-      this.tmpXY = [target.shape_object.attr("x") - x,target.shape_object.attr("y") - y]
+      console.log(this.selected.length)
+      if(this.selected.length > 1){
+        this.action = "move";
+        console.log("DIZWURKS")
+      }else{
+        this.select(target.shape_object);
+        this.action = "move";
+        this.offsetXY = [target.shape_object.attr("x") - x,target.shape_object.attr("y") - y]
+      }
     }
   }else if(this.selected.length == 0){
     var shape = null;
@@ -167,7 +179,8 @@ VectorEditor.prototype.drawGrid = function(){
 }
 
 VectorEditor.prototype.move = function(shape, x, y){
-  shape.attr({x: x, y: y})
+  shape.attr('x', shape.attr('x') + x)
+  shape.attr('y', shape.attr('y') + y)
 }
 
 VectorEditor.prototype.onMouseMove = function(event){
@@ -180,8 +193,10 @@ VectorEditor.prototype.onMouseMove = function(event){
     }else{
       if(this.action == "move"){
         for(var i = 0; i < this.selected.length; i++){
-          this.move(this.selected[i],  x + this.tmpXY[0], y + this.tmpXY[1])
+          this.move(this.selected[i], x - this.tmpXY[0], y - this.tmpXY[1])
         }
+        this.moveTracker(x - this.tmpXY[0], y - this.tmpXY[1])
+        this.tmpXY = [x, y]
       }
     }
   }else if(this.selected.length == 1){
