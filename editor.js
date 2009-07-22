@@ -27,6 +27,7 @@ function VectorEditor(elem, width, height){
     this.selected = []
     
     this.shapes = []
+    this.trackers = []
     
     this.draw.canvas.onmousedown = bind(this.onMouseDown, this);
     this.draw.canvas.onmousemove = bind(this.onMouseMove, this);
@@ -40,11 +41,15 @@ VectorEditor.prototype.setMode = function(mode){
 }
 
 VectorEditor.prototype.unselect = function(){
-  this.selected = []
+  this.selected = [];
+  for(var i = 0; i < this.trackers.length; i++){
+    this.trackers[i].remove();
+  }
+  this.trackers = []
 }
 
 VectorEditor.prototype.resize = function(object, width, height, x, y){
-  if(object.type == "rect"){
+  if(object.type == "rect" || object.type == "image"){
     if(width > 0){
       object.attr("width", width)
     }else{
@@ -88,7 +93,7 @@ VectorEditor.prototype.onMouseDown = function(event){
               "stroke-opacity": 0.5, 
               "fill": "#007fff",
               "stroke": "#007fff"});
-    }else{
+    }else if(target.shape_object){
       //select target
       target.shape_object.attr("fill", "red")
       console.log(target)
@@ -107,6 +112,9 @@ VectorEditor.prototype.onMouseDown = function(event){
     }else if(this.mode == "polygon"){
       shape = this.draw.path({}).moveTo(x, y)
       shape.subtype = "polygon"
+    }else if(this.mode == "image"){
+      shape = this.draw.image("http://upload.wikimedia.org/wikipedia/commons/a/a5/ComplexSinInATimeAxe.gif", x, y, 0, 0);
+    }else if(this.mode == "text"){
     }
     shape.attr({fill: this.fill, stroke: this.stroke})
     this.addShape(shape)
@@ -143,6 +151,8 @@ VectorEditor.prototype.onMouseMove = function(event){
   }else if(this.selected.length == 1){
     if(this.mode == "rect"){
       this.resize(this.selected[0], x - this.onHitXY[0], y - this.onHitXY[1], this.onHitXY[0], this.onHitXY[1])
+    }else if(this.mode == "image"){
+      this.resize(this.selected[0], x - this.onHitXY[0], y - this.onHitXY[1], this.onHitXY[0], this.onHitXY[1])
     }else if(this.mode == "ellipse"){
       this.resize(this.selected[0], x - this.onHitXY[0], y - this.onHitXY[1], this.onHitXY[0], this.onHitXY[1])
     }else if(this.mode == "path"){
@@ -178,12 +188,33 @@ VectorEditor.prototype.trackerBox = function(x, y){
 
 VectorEditor.prototype.showTracker = function(shape){
   if(shape.subtype == "line"){
-    var box = shape.getBBox()
+    var line = Raphael.parsePathString(shape.attr('path'));
     var tracker = this.draw.set();
-    //tracker.push(this.draw.trackerBox(box.x, box.y))
-    console.log(Raphael.parsePathString(shape.attr('path')))
     
+    tracker.push(this.trackerBox(line[0][1],line[0][2]))
+    tracker.push(this.trackerBox(line[1][1],line[1][2]))
+    
+    this.trackers.push(tracker)
+  }else if(shape.type == "rect"){
+    var tracker = this.draw.set();
+    var box = shape.getBBox();
+    tracker.push(this.trackerBox(box.x, box.y))
+    tracker.push(this.trackerBox(box.x + box.width, box.y))
+    tracker.push(this.trackerBox(box.x + box.width, box.y + box.height))
+    tracker.push(this.trackerBox(box.x, box.y + box.height))
+    
+    this.trackers.push(tracker)
   }
+}
+
+VectorEditor.prototype.showGroupTracker = function(shape){
+  var tracker = this.draw.set();
+  var box = shape.getBBox();
+  tracker.push(this.draw.rect(box.x - 5, box.y - 5, box.width + 10, box.height + 10).attr({
+    "stroke-dasharray": "-",
+    "stroke": "blue"
+  }))
+  this.trackers.push(tracker)
 }
 
 VectorEditor.prototype.onDblClick = function(event){
@@ -199,19 +230,33 @@ VectorEditor.prototype.onMouseUp = function(event){
     for(var i = 0; i < this.shapes.length; i++){
       if(this.rectsIntersect(this.shapes[i].getBBox(), sbox)){
         this.selected.push(this.shapes[i])
-        this.shapes[i].attr("fill","#007fff")
+        //this.shapes[i].attr("fill","#007fff")
+        //this.showGroupTracker(this.shapes[i])
+      }
+    }
+    
+    if(this.selected.length == 1){
+      this.showTracker(this.selected[0])
+    }else if(this.selected.length > 1){
+      for(var i = 0; i < this.selected.length; i++){
+        this.showGroupTracker(this.selected[i])
       }
     }
     this.selectbox.remove()
     this.selectbox = null;
+    if(this.selected.length == 0){
+      this.unselect()
+    }
   }else if(this.mode == "rect"){
-    this.selected = [];
+    this.unselect()
   }else if(this.mode == "ellipse"){
-    this.selected = [];
+    this.unselect()
   }else if(this.mode == "path"){
-    this.selected = [];
+    this.unselect()
   }else if(this.mode == "line"){
-    this.selected = [];
+    this.unselect()
+  }else if(this.mode == "image"){
+    this.unselect()
   }
   
 }
