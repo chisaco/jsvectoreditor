@@ -124,10 +124,8 @@ VectorEditor.prototype.onMouseDown = function(event){
               "fill": "#007fff",
               "stroke": "#007fff"});
     }else if(target.shape_object){
-      console.log(this.selected.length)
       if(this.selected.length > 1){
         this.action = "move";
-        console.log("DIZWURKS")
       }else{
         this.select(target.shape_object);
         this.action = "move";
@@ -179,8 +177,14 @@ VectorEditor.prototype.drawGrid = function(){
 }
 
 VectorEditor.prototype.move = function(shape, x, y){
-  shape.attr('x', shape.attr('x') + x)
-  shape.attr('y', shape.attr('y') + y)
+  shape.translate(x,y)
+  //if(shape.type == "rect" || shape.type == "image"){
+  //  shape.attr('x', shape.attr('x') + x)
+  //  shape.attr('y', shape.attr('y') + y)
+  //}else if(shape.type == "ellipse"){
+  //  shape.attr('rx', shape.attr('rx') + x)
+  //  shape.attr('ry', shape.attr('ry') + y)
+  //}
 }
 
 VectorEditor.prototype.onMouseMove = function(event){
@@ -246,7 +250,16 @@ VectorEditor.prototype.showTracker = function(shape){
     tracker.push(this.trackerBox(line[1][1],line[1][2]))
     
     this.trackers.push(tracker)
-  }else if(shape.type == "rect"){
+  }else if(shape.type == "rect" || shape.type == "image"){
+    var tracker = this.draw.set();
+    var box = shape.getBBox();
+    tracker.push(this.trackerBox(box.x, box.y))
+    tracker.push(this.trackerBox(box.x + box.width, box.y))
+    tracker.push(this.trackerBox(box.x + box.width, box.y + box.height))
+    tracker.push(this.trackerBox(box.x, box.y + box.height))
+    
+    this.trackers.push(tracker)
+  }else if(shape.type == "ellipse"){
     var tracker = this.draw.set();
     var box = shape.getBBox();
     tracker.push(this.trackerBox(box.x, box.y))
