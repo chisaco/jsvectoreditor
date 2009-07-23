@@ -1,23 +1,20 @@
-<script type="text/javascript" src="raphael.js"></script>
-<script type="text/javascript" src="editor.js"></script>
-
 <body bgcolor="gray">
-<div id="canvas" style="background-color: white; position: absolute;top:0;left:0; width: 480px; height: 272px"></div>
+  <div id="canvas" style="background-color: white; position: absolute;top:0;left:0; width: 480px; height: 272px"></div>
 
-
-<div style="position: absolute; top: 30px; left: 500px;">
-<button onclick="editor.setMode('select')">Select</button>
-<button onclick="editor.setMode('rect')">Rect</button>
-<button onclick="editor.setMode('line')">Line</button>
-<button onclick="editor.setMode('ellipse')">Ellipse</button>
-<button onclick="editor.setMode('path')">Path</button>
-<button onclick="editor.setMode('polygon')">Polygon</button>
-<button onclick="editor.setMode('image')">Image</button>
-<button onclick="editor.setMode('text')">Text</button>
-</div>
-
-<script>
-editor = new VectorEditor("canvas", 480, 272);
-</script>
-
+  <div style="position: absolute; top: 30px; left: 500px;">
+    <button onclick="editor.setMode('select')">Select</button>
+    <button onclick="editor.setMode('rect')">Rect</button>
+    <button onclick="editor.setMode('line')">Line</button>
+    <button onclick="editor.setMode('ellipse')">Ellipse</button>
+    <button onclick="editor.setMode('path')">Path</button>
+    <button onclick="editor.setMode('polygon')">Polygon</button>
+    <button onclick="editor.setMode('image')">Image</button>
+    <button onclick="editor.setMode('text')">Text</button>
+  </div>
+  
+  <script type="text/javascript" src="raphael.js"></script>
+  <script type="text/javascript" src="editor.js"></script>
+  <script type="text/javascript">
+    editor = new VectorEditor("canvas", 480, 272);
+  </script>
 </body>

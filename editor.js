@@ -329,6 +329,5 @@ VectorEditor.prototype.onMouseUp = function(event){
   }else if(this.mode == "image"){
     this.unselect()
   }
-  
 }
 
