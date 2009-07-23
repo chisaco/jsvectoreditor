@@ -208,6 +208,7 @@ VectorEditor.prototype.onMouseDown = function(event){
     }else if(this.mode == "text"){
     }
     if(shape){
+      shape.id = this.generateUUID();
       shape.attr({fill: this.fill, stroke: this.stroke})
       this.addShape(shape)
     }
@@ -300,6 +301,20 @@ VectorEditor.prototype.trackerBox = function(x, y){
   })
 }
 
+VectorEditor.prototype.generateUUID = function(){
+  var uuid = ""
+  for(var i = 0; i < 32; i++){
+    uuid += "ABCDEFGHIJKLMNOPQRSTUVWXYZ".charAt(Math.floor(Math.random()*26))
+  }
+  return uuid;
+}
+
+
+VectorEditor.prototype.getMarkup = function(){
+    return this.draw.canvas.parentNode.innerHTML;
+}
+
+
 VectorEditor.prototype.showTracker = function(shape){
   if(shape.subtype == "line"){
     var line = Raphael.parsePathString(shape.attr('path'));
@@ -386,7 +401,9 @@ VectorEditor.prototype.onMouseUp = function(event){
       }else if(new_selected.length == 0){
         this.unselect()
       }
-      this.selectbox.remove()
+      if(this.selectbox.node.parentNode){
+        this.selectbox.remove()
+      }
       this.selectbox = null;
       
     }else{
