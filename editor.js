@@ -260,6 +260,7 @@ VectorEditor.prototype.showTracker = function(shape){
     
     this.trackers.push(tracker)
   }else if(shape.type == "ellipse"){
+  
     var tracker = this.draw.set();
     var box = shape.getBBox();
     tracker.push(this.trackerBox(box.x, box.y))
