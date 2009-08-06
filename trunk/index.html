@@ -1,5 +1,5 @@
 <body bgcolor="gray">
-  <div id="canvas" style="background-color: white; position: absolute;top:0;left:0; width: 480px; height: 272px"></div>
+  <div id="canvas" style="background-color: white; position: absolute;top:0;left:0; width: 480px; height: 272px; top: 20px; left: 20px"></div>
 
   <div style="position: absolute; top: 30px; left: 500px;">
     <button onclick="editor.setMode('select')">Select</button>
@@ -14,10 +14,12 @@
     <button onclick="editor.setMode('delete')">Delete</button>
     <button onclick="alert(editor.getMarkup())">Markup</button>
   </div>
-  
+  <script type="text/javascript" src="jquery-1.3.2.js"></script>
   <script type="text/javascript" src="raphael.js"></script>
   <script type="text/javascript" src="editor.js"></script>
   <script type="text/javascript">
-    editor = new VectorEditor("canvas", 480, 272);
+    $(document).ready(function(){
+      editor = new VectorEditor(document.getElementById("canvas"), 480, 272);
+    })
   </script>
 </body>
