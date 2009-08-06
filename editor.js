@@ -36,9 +36,9 @@ function VectorEditor(elem, width, height){
     var draw = this.draw;
     
     function offset(){
-      if(window.Ext)return Ext.get(draw.canvas).getXY();
+      if(window.Ext)return Ext.get(elem).getXY();
       if(window.jQuery){
-        var pos = jQuery(draw.canvas).offset();
+        var pos = jQuery(elem).offset();
         return [pos.left, pos.top];
       }
       return [0,0]
