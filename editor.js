@@ -9,17 +9,18 @@ function array(a){
 
 function VectorEditor(elem, width, height){
     if (typeof(Raphael) != "function") { //check for the renderer
-        return alert("Error! No Vector Graphics Library Found!"); //if renderer isn't there, return false;
+        return alert("Error! Renderer is Missing!"); //if renderer isn't there, return false;
     }
     
+    this.container = elem
     this.draw = Raphael(elem, width, height);
     
     this.onHitXY = [0,0]
     this.offsetXY = [0,0]
     this.tmpXY = [0,0]
     
-    this.fill = "#f00"; //red
-    this.stroke = "#000"; //black
+    this.fill =   "#ff0000"; //red
+    this.stroke = "#000000"; //black
     
     this.mode = "select";
     this.selectbox = null;
@@ -32,10 +33,33 @@ function VectorEditor(elem, width, height){
     this.shapes = []
     this.trackers = []
     
-    this.draw.canvas.onmousedown = bind(this.onMouseDown, this);
-    this.draw.canvas.onmousemove = bind(this.onMouseMove, this);
-    this.draw.canvas.onmouseup = bind(this.onMouseUp, this);
-    this.draw.canvas.ondblclick = bind(this.onDblClick, this);
+    var draw = this.draw;
+    
+    function offset(){
+      if(window.Ext)return Ext.get(draw.canvas).getXY();
+      if(window.jQuery){
+        var pos = jQuery(draw.canvas).offset();
+        return [pos.left, pos.top];
+      }
+      return [0,0]
+    }
+    
+    $(elem).mousedown(bind(function(event){
+      event.preventDefault()
+      this.onMouseDown(event.clientX - offset()[0], event.clientY - offset()[1], event.target)
+    }, this));
+    $(elem).mousemove(bind(function(event){
+      event.preventDefault()
+      this.onMouseMove(event.clientX - offset()[0], event.clientY - offset()[1], event.target)
+    }, this));
+    $(elem).mouseup(bind(function(event){
+      event.preventDefault()
+      this.onMouseUp(event.clientX - offset()[0], event.clientY - offset()[1], event.target)
+    }, this));
+    $(elem).dblclick(bind(function(event){
+      event.preventDefault()
+      this.onDblClick(event.clientX - offset()[0], event.clientY - offset()[1], event.target)
+    }, this));
 }
 
 VectorEditor.prototype.setMode = function(mode){
@@ -90,14 +114,24 @@ VectorEditor.prototype.is_selected = function(shape){
 
 VectorEditor.prototype.removeTracker = function(tracker){
   if(!tracker){
-    for(var i = 0; i < this.trackers.length; i++){
-      this.removeTracker(this.trackers[i]);
+    while(this.trackers.length > 0){
+      this.removeTracker(this.trackers[0]);
     }
-    this.trackers = []
+    //this.trackers = []
   }else{
-    try {
-      tracker.remove();
-    }catch(err){}
+    //try {
+    tracker.remove();
+    
+    for(var i = 0; i < this.trackers.length; i++){
+      if(this.trackers[i] == tracker){
+        this.trackers.splice(i, 1)
+      }
+    }
+    //else if(tracker.shape){
+    //  this.removeTracker(tracker.shape)
+    
+    //}
+    //}catch(err){}
   }
 }
 
@@ -110,6 +144,11 @@ VectorEditor.prototype.moveTracker = function(x, y){
       el[k].attr("y", box.y + y);
     }
   }
+}
+
+VectorEditor.prototype.isCanvas = function(element){
+  return element == this.draw.canvas || element == this.container;
+  //in webkit, fires container
 }
 
 VectorEditor.prototype.selectAdd = function(shape){
@@ -164,30 +203,34 @@ VectorEditor.prototype.resize = function(object, width, height, x, y){
   }
 }
 
-VectorEditor.prototype.onMouseDown = function(event){
-  var x = event.clientX,
-      y = event.clientY,
-      target = event.target
-      
+VectorEditor.prototype.onMouseDown = function(x, y, target){
   this.tmpXY = this.onHitXY = [x,y]
   
   if(this.mode == "select" && !this.selectbox){
-    if(target == this.draw.canvas){
+    if(this.isCanvas(target)){
       if(!this.selectadd) this.unselect();
       this.selectbox = this.draw.rect(x, y, 0, 0)
         .attr({"fill-opacity": 0.15, 
               "stroke-opacity": 0.5, 
-              "fill": "#007fff",
+              "fill": "#007fff", //mah fav kolur!
               "stroke": "#007fff"});
-    }else if(target.shape_object){
+    }else{
+      var shape_object = null
+      if(target.shape_object){
+        shape_object = target.shape_object
+      }else if(target.parentNode.shape_object){
+        shape_object = target.parentNode.shape_object
+      }else{
+        return; //likely tracker
+      }
       if(this.selected.length > 1 || this.selectadd){
-        this.selectAdd(target.shape_object);
+        this.selectAdd(shape_object);
         this.action = "move";
       }else{
-        this.select(target.shape_object);
+        this.select(shape_object);
         this.action = "move";
       }
-      this.offsetXY = [target.shape_object.attr("x") - x,target.shape_object.attr("y") - y]
+      this.offsetXY = [shape_object.attr("x") - x,shape_object.attr("y") - y]
     }
   }else if(this.selected.length == 0){
     var shape = null;
@@ -206,6 +249,7 @@ VectorEditor.prototype.onMouseDown = function(event){
     }else if(this.mode == "image"){
       shape = this.draw.image("http://upload.wikimedia.org/wikipedia/commons/a/a5/ComplexSinInATimeAxe.gif", x, y, 0, 0);
     }else if(this.mode == "text"){
+      shape = this.draw.text(x, y, "elitist").attr("font-size",20)
     }
     if(shape){
       shape.id = this.generateUUID();
@@ -247,9 +291,7 @@ VectorEditor.prototype.move = function(shape, x, y){
   //}
 }
 
-VectorEditor.prototype.onMouseMove = function(event){
-  var x = event.clientX,
-      y = event.clientY;
+VectorEditor.prototype.onMouseMove = function(x, y, target){
       
   if(this.mode == "select"){
     if(this.selectbox){
@@ -278,7 +320,7 @@ VectorEditor.prototype.onMouseMove = function(event){
       //this.selected[0].redraw();
       var pathsplit = this.selected[0].attr("path").split(" ");
       if(pathsplit.length > 3){
-        var hack = pathsplit.reverse().slice(3).reverse().join(" ")+' '
+        var hack = pathsplit.reverse().slice(3).reverse().join(" ")+' ';
         //its such a pity that raphael has lost the ability to do it without hacks -_-
         this.selected[0].attr("path", hack)
       }
@@ -298,15 +340,19 @@ VectorEditor.prototype.trackerBox = function(x, y){
     this.attr("fill", "red")
   }).mouseout(function(){
     this.attr("fill", "white")
+  }).mousedown(function(){
+  
+  }).mousemove(function(){
+  }).mouseup(function(){
   })
 }
 
 VectorEditor.prototype.generateUUID = function(){
   var uuid = ""
-  for(var i = 0; i < 32; i++){
-    uuid += "ABCDEFGHIJKLMNOPQRSTUVWXYZ".charAt(Math.floor(Math.random()*26))
+  for(var i = 0; i < 16; i++){
+    uuid += "abcdefghijklmnopqrstuvwxyz0123456789".charAt(Math.floor(Math.random()*Math.min(36,26+i)))
   }
-  return uuid;
+  return "shape:"+uuid;
 }
 
 
@@ -345,6 +391,12 @@ VectorEditor.prototype.showTracker = function(shape){
     tracker.push(this.trackerBox(box.x, box.y + box.height))
     
     this.trackers.push(tracker)
+  }else{
+    var tracker = this.draw.set();
+    var box = shape.getBBox();
+    tracker.shape = shape;
+    tracker.push(this.draw.rect(box.x - 10, box.y - 10, box.width + 20, box.height + 20).attr({"opacity":0.3}))
+    this.trackers.push(tracker)
   }
 }
 
@@ -361,10 +413,15 @@ VectorEditor.prototype.showGroupTracker = function(shape){
   this.trackers.push(tracker)
 }
 
-VectorEditor.prototype.onDblClick = function(event){
-  if(this.mode == "polygon" && this.selected.length == 1){
-    this.selected[0].andClose()
-    this.selected = [];
+VectorEditor.prototype.onDblClick = function(x, y, target){
+  if(this.selected.length == 1){
+    if(this.selected[0].getBBox().height == 0 && this.selected[0].getBBox().width == 0){
+      this.deleteShape(this.selected[0])
+    }
+    if(this.mode == "polygon"){
+      this.selected[0].andClose()
+      this.unselect()
+    }
   }
 }
 
@@ -377,11 +434,27 @@ VectorEditor.prototype.deleteShape = function(shape){
       this.removeTracker(this.trackers[i]);
     }
   }
+  for(var i = 0; i < this.shapes.length; i++){
+    if(this.shapes[i] == shape){
+      this.shapes.splice(i, 1)
+    }
+  }
   //should remove references, but whatever
 }
 
-VectorEditor.prototype.onMouseUp = function(event){
-  var target = event.target
+VectorEditor.prototype.deleteAll = function(){
+  this.draw.clear()
+  this.shapes = []
+  this.trackers = []
+}
+
+VectorEditor.prototype.clearShapes = function(){
+  while(this.shapes.length > 0){
+    this.deleteShape(this.shapes[0])
+  }
+}
+
+VectorEditor.prototype.onMouseUp = function(x, y, target){
   if(this.mode == "select"){
     if(this.selectbox){
       var sbox = this.selectbox.getBBox()
@@ -392,14 +465,14 @@ VectorEditor.prototype.onMouseUp = function(event){
         }
       }
       
-      if(new_selected.length == 1){
-        this.select(this.selected[0])
-      }else if(new_selected.length > 1){
+      if(new_selected.length == 0){
+        this.unselect()
+      }if(new_selected.length == 1 && this.selectadd == false){
+        this.select(new_selected[0])
+      }else{
         for(var i = 0; i < new_selected.length; i++){
           this.selectAdd(new_selected[i])
         }
-      }else if(new_selected.length == 0){
-        this.unselect()
       }
       if(this.selectbox.node.parentNode){
         this.selectbox.remove()
@@ -411,7 +484,9 @@ VectorEditor.prototype.onMouseUp = function(event){
     }
   }else if(this.selected.length == 1){
     if(this.selected[0].getBBox().height == 0 && this.selected[0].getBBox().width == 0){
-      this.deleteShape(this.selected[0])
+      if(this.selected[0].subtype != "polygon"){
+        this.deleteShape(this.selected[0])
+      }
     }
     if(this.mode == "rect"){
       this.unselect()
@@ -422,6 +497,8 @@ VectorEditor.prototype.onMouseUp = function(event){
     }else if(this.mode == "line"){
       this.unselect()
     }else if(this.mode == "image"){
+      this.unselect()
+    }else if(this.mode == "text"){
       this.unselect()
     }
   }
