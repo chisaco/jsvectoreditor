@@ -66,6 +66,9 @@ VectorEditor.prototype.drawGrid = function(){
 
 VectorEditor.prototype.move = function(shape, x, y){
   shape.translate(x,y)
+  if(shape._ && shape._.rt && shape._.rt.deg != 0){
+    shape.rotate(shape._.rt.deg, true)
+  }
 }
 
 
