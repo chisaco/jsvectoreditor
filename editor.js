@@ -201,7 +201,8 @@ VectorEditor.prototype.onMouseMove = function(x, y, target){
         for(var i = 0; i < this.selected.length; i++){
           this.move(this.selected[i], x - this.tmpXY[0], y - this.tmpXY[1])
         }
-        this.moveTracker(x - this.tmpXY[0], y - this.tmpXY[1])
+        //this.moveTracker(x - this.tmpXY[0], y - this.tmpXY[1])
+        this.updateTracker();
         this.tmpXY = [x, y]
       }else if(this.action == "rotate"){
         //no multi-rotate
@@ -209,7 +210,8 @@ VectorEditor.prototype.onMouseMove = function(x, y, target){
         var rad = Math.atan2(y - (box.y + box.height/2), x - (box.x + box.width/2))
         var deg = ((rad * (180/Math.PI))+90) % 360
         this.selected[0].rotate(deg, true); //absolute!
-        this.rotateTracker(deg, (box.x + box.width/2), (box.y + box.height/2))
+        //this.rotateTracker(deg, (box.x + box.width/2), (box.y + box.height/2))
+        this.updateTracker();
       }
     }
   }else if(this.selected.length == 1){
@@ -228,6 +230,9 @@ VectorEditor.prototype.onMouseMove = function(x, y, target){
       //this.selected[0].path[this.selected[0].path.length - 1].arg[1] = y
       //this.selected[0].redraw();
       //var pathsplit = this.selected[0].attr("path").split(" ");
+      
+      //theres a few freaky bugs that happen due to this new IE capable way that is probably better
+    
       var pathsplit = Raphael.parsePathString(this.selected[0].attr("path"))
       if(pathsplit.length > 1){
         //var hack = pathsplit.reverse().slice(3).reverse().join(" ")+' ';
