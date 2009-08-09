@@ -115,31 +115,31 @@ VectorEditor.prototype.showTracker = function(shape){
   var box = shape.getBBox();
   var tracker = this.draw.set();
   tracker.shape = shape;
-  tracker.lastx = box.x //if zero then easier
-  tracker.lasty = box.y //if zero then easier
+  tracker.lastx = 0 //if zero then easier
+  tracker.lasty = 0 //if zero then easier
   if(shape.subtype == "line"){
     var line = Raphael.parsePathString(shape.attr('path'));
     tracker.push(this.trackerBox(line[0][1],line[0][2]))
     tracker.push(this.trackerBox(line[1][1],line[1][2]))
     this.trackers.push(tracker)
   }else if(shape.type == "rect" || shape.type == "image"){
-    tracker.push(this.draw.rect(box.x - 10, box.y - 10, box.width + 20, box.height + 20).attr({"opacity":0.3}))
-    tracker.push(this.trackerBox(box.x - 10, box.y - 10))
-    tracker.push(this.trackerBox(box.x + box.width + 10, box.y - 10))
-    tracker.push(this.trackerBox(box.x + box.width + 10, box.y + box.height + 10))
-    tracker.push(this.trackerBox(box.x - 10, box.y + box.height + 10))
-    tracker.push(this.trackerCircle(box.x + box.width/2, box.y - 25))
+    tracker.push(this.draw.rect(-10, -10, box.width + 20, box.height + 20).attr({"opacity":0.3}))
+    tracker.push(this.trackerBox(-10, -10))
+    tracker.push(this.trackerBox(box.width + 10, -10))
+    tracker.push(this.trackerBox(box.width + 10, box.height + 10))
+    tracker.push(this.trackerBox(-10, box.height + 10))
+    tracker.push(this.trackerCircle(box.width/2, -25))
     this.trackers.push(tracker)
   }else if(shape.type == "ellipse"){
     tracker.push(this.trackerBox(box.x, box.y))
-    tracker.push(this.trackerBox(box.x + box.width, box.y))
-    tracker.push(this.trackerBox(box.x + box.width, box.y + box.height))
-    tracker.push(this.trackerBox(box.x, box.y + box.height))
-    tracker.push(this.trackerCircle(box.x + box.width/2, box.y - 25))
+    tracker.push(this.trackerBox(box.width, box.y))
+    tracker.push(this.trackerBox(box.width, box.height))
+    tracker.push(this.trackerBox(box.x, box.height))
+    tracker.push(this.trackerCircle(box.width/2, -25))
     this.trackers.push(tracker)
   }else{
-    tracker.push(this.draw.rect(box.x - 10, box.y - 10, box.width + 20, box.height + 20).attr({"opacity":0.3}))
-    tracker.push(this.trackerCircle(box.x + box.width/2, box.y - 25))
+    tracker.push(this.draw.rect(-10, -10, box.width + 20, box.height + 20).attr({"opacity":0.3}))
+    tracker.push(this.trackerCircle(box.width/2, -25))
     this.trackers.push(tracker)
   }
   this.updateTracker(tracker)
