@@ -140,8 +140,9 @@ VectorEditor.prototype.moveTracker = function(x, y){
 }
 
 VectorEditor.prototype.isCanvas = function(element){
-  return element == this.draw.canvas || element == this.container;
-  //in webkit, fires container
+  return element == this.draw.canvas || //yay for Firefox and Opera!
+         element == this.container || //erm.. makes sense for Webkit
+         (Raphael.vml && element == this.draw.canvas.parentNode); //IE.. uh...
 }
 
 VectorEditor.prototype.selectAdd = function(shape){
