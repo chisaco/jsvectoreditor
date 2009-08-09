@@ -331,11 +331,18 @@ VectorEditor.prototype.onMouseMove = function(x, y, target){
       //this.selected[0].path[this.selected[0].path.length - 1].arg[0] = x
       //this.selected[0].path[this.selected[0].path.length - 1].arg[1] = y
       //this.selected[0].redraw();
-      var pathsplit = this.selected[0].attr("path").split(" ");
-      if(pathsplit.length > 3){
-        var hack = pathsplit.reverse().slice(3).reverse().join(" ")+' ';
+      //var pathsplit = this.selected[0].attr("path").split(" ");
+      var pathsplit = Raphael.parsePathString(this.selected[0].attr("path"))
+      if(pathsplit.length > 1){
+        //var hack = pathsplit.reverse().slice(3).reverse().join(" ")+' ';
+        
+        //console.log(pathsplit)
+        pathsplit.splice(pathsplit.length - 1, 1);
         //its such a pity that raphael has lost the ability to do it without hacks -_-
-        this.selected[0].attr("path", hack)
+        this.selected[0].attr("path", pathsplit)
+      }else{
+        //console.debug(pathsplit)
+        //normally when this executes there's somethign strange that happened
       }
       this.selected[0].lineTo(x, y)
     }
