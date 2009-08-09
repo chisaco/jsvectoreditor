@@ -150,6 +150,19 @@ VectorEditor.prototype.moveTracker = function(x, y){
   }
 }
 
+VectorEditor.prototype.updateTracker = function(tracker){
+  if(!tracker){
+    for(var i = 0; i < this.trackers.length; i++){
+      this.updateTracker(this.trackers[i])
+    }
+  }else{
+    if(shape._ && shape._.rt && shape._.rt.deg > 0){
+      this.rotateTracker(shape._.rt.deg, (box.x + box.width/2), (box.y + box.height/2))
+    }
+    
+  }
+}
+
 VectorEditor.prototype.isCanvas = function(element){
   return element == this.draw.canvas || //yay for Firefox and Opera!
          element == this.container || //erm.. makes sense for Webkit
@@ -352,7 +365,9 @@ VectorEditor.prototype.onMouseMove = function(x, y, target){
         //no multi-rotate
         var box = this.selected[0].getBBox()
         var rad = Math.atan2(y - (box.y + box.height/2), x - (box.x + box.width/2))
-        this.selected[0].rotate(((rad * (180/Math.PI))+90) % 360, true); //absolute!
+        var deg = ((rad * (180/Math.PI))+90) % 360
+        this.selected[0].rotate(deg, true); //absolute!
+        this.rotateTracker(deg, (box.x + box.width/2), (box.y + box.height/2))
       }
     }
   }else if(this.selected.length == 1){
@@ -435,17 +450,15 @@ VectorEditor.prototype.getMarkup = function(){
 
 
 VectorEditor.prototype.showTracker = function(shape){
+  var box = shape.getBBox();
+  var tracker = this.draw.set();
+  tracker.shape = shape;
   if(shape.subtype == "line"){
     var line = Raphael.parsePathString(shape.attr('path'));
-    var tracker = this.draw.set();
-    tracker.shape = shape;
     tracker.push(this.trackerBox(line[0][1],line[0][2]))
     tracker.push(this.trackerBox(line[1][1],line[1][2]))
     this.trackers.push(tracker)
   }else if(shape.type == "rect" || shape.type == "image"){
-    var tracker = this.draw.set();
-    var box = shape.getBBox();
-    tracker.shape = shape;
     tracker.push(this.draw.rect(box.x - 10, box.y - 10, box.width + 20, box.height + 20).attr({"opacity":0.3}))
     tracker.push(this.trackerBox(box.x - 10, box.y - 10))
     tracker.push(this.trackerBox(box.x + box.width + 10, box.y - 10))
@@ -454,9 +467,6 @@ VectorEditor.prototype.showTracker = function(shape){
     tracker.push(this.trackerCircle(box.x + box.width/2, box.y - 25))
     this.trackers.push(tracker)
   }else if(shape.type == "ellipse"){
-    var tracker = this.draw.set();
-    var box = shape.getBBox();
-    tracker.shape = shape;
     tracker.push(this.trackerBox(box.x, box.y))
     tracker.push(this.trackerBox(box.x + box.width, box.y))
     tracker.push(this.trackerBox(box.x + box.width, box.y + box.height))
@@ -464,16 +474,11 @@ VectorEditor.prototype.showTracker = function(shape){
     tracker.push(this.trackerCircle(box.x + box.width/2, box.y - 25))
     this.trackers.push(tracker)
   }else{
-    var tracker = this.draw.set();
-    var box = shape.getBBox();
-    tracker.shape = shape;
     tracker.push(this.draw.rect(box.x - 10, box.y - 10, box.width + 20, box.height + 20).attr({"opacity":0.3}))
     tracker.push(this.trackerCircle(box.x + box.width/2, box.y - 25))
     this.trackers.push(tracker)
   }
 }
-
-
 
 VectorEditor.prototype.showGroupTracker = function(shape){
   var tracker = this.draw.set();
