@@ -38,13 +38,19 @@ function VectorEditor(elem, width, height){
     var draw = this.draw;
     
     function offset(){
+      //technically, vX.pos works too and I should probably use whatever I built here, but I have jQuery instead.
       if(window.Ext)return Ext.get(elem).getXY();
       if(window.jQuery){
         var pos = jQuery(elem).offset();
         return [pos.left, pos.top];
       }
+      if(window.vx){ //vx support
+        var pos = vx.pos(elem);
+        return [pos.l, pos.t]
+      }
       return [0,0]
     }
+    
     
     $(elem).mousedown(bind(function(event){
       event.preventDefault()
@@ -82,20 +88,6 @@ VectorEditor.prototype.setMode = function(mode){
   }
 }
 
-VectorEditor.prototype.unselect = function(shape){
-  if(!shape){
-    this.selected = [];
-    this.removeTracker();
-  }else{
-    this.array_remove(shape, this.selected);
-    for(var i = 0; i < this.trackers.length; i++){
-      if(this.trackers[i].shape == shape){
-        this.removeTracker(this.trackers[i]);
-      }
-    }
-  }
-}
-
 //from the vXJS JS Library
 VectorEditor.prototype.in_array = function(v,a){
   for(var i=a.length;i--&&a[i]!=v;);
@@ -112,141 +104,12 @@ VectorEditor.prototype.is_selected = function(shape){
   return this.in_array(shape, this.selected) != -1;
 }
 
-VectorEditor.prototype.removeTracker = function(tracker){
-  if(!tracker){
-    while(this.trackers.length > 0){
-      this.removeTracker(this.trackers[0]);
-    }
-  }else{
-    tracker.remove();
-    
-    for(var i = 0; i < this.trackers.length; i++){
-      if(this.trackers[i] == tracker){
-        this.trackers.splice(i, 1)
-      }
-    }
-  }
-}
 
-VectorEditor.prototype.rotateTracker = function(a, x, y){
-  for(var i = 0; i < this.trackers.length; i++){
-    var el = this.trackers[i]
-    el.rotate(a, x, y)
-  }
-}
-
-VectorEditor.prototype.moveTracker = function(x, y){
-  for(var i = 0; i < this.trackers.length; i++){
-    var el = this.trackers[i]
-    /*
-    for(var k = 0; k < el.length; k++){
-      var box = el[k].getBBox()
-      //el[k].attr("x", box.x + x);
-      //el[k].attr("y", box.y + y);
-      el[k].translate(x,y)
-    }
-    */
-    el.translate(x,y)
-  }
-}
-
-VectorEditor.prototype.updateTracker = function(tracker){
-  if(!tracker){
-    for(var i = 0; i < this.trackers.length; i++){
-      this.updateTracker(this.trackers[i])
-    }
-  }else{
-    if(shape._ && shape._.rt && shape._.rt.deg > 0){
-      this.rotateTracker(shape._.rt.deg, (box.x + box.width/2), (box.y + box.height/2))
-    }
-    
-  }
-}
 
 VectorEditor.prototype.isCanvas = function(element){
   return element == this.draw.canvas || //yay for Firefox and Opera!
          element == this.container || //erm.. makes sense for Webkit
          (Raphael.vml && element == this.draw.canvas.parentNode); //IE.. uh...
-}
-
-VectorEditor.prototype.selectAdd = function(shape){
-  if(this.is_selected(shape) == false){
-    this.selected.push(shape)
-    this.showGroupTracker(shape)
-  }
-}
-
-VectorEditor.prototype.selectToggle = function(shape){
-  if(this.is_selected(shape) == false){
-    this.selected.push(shape)
-    this.showGroupTracker(shape)
-  }else{
-    this.unselect(shape)
-  }
-}
-
-VectorEditor.prototype.select = function(shape){
-  this.unselect()
-  this.selected = [shape]
-  this.showTracker(shape)
-}
-
-
-
-VectorEditor.prototype.scale = function(shape, corner, x, y){
-  var xp = 0, yp = 0
-  var box = shape.getBBox()
-  switch(corner){
-    case "tr":
-      xp = box.x
-      yp = box.y + box.height
-      break;
-    case "bl":
-      xp = box.x + box.width
-      yp = box.y
-      break;
-    case "tl":
-      xp = box.x + box.width;
-      yp = box.y + box.height;
-    break;
-    case "br":
-      xp = box.x
-      yp = box.y
-    break;
-  }
-  shape.scale(x, y, xp, yp)
-}
-
-VectorEditor.prototype.resize = function(object, width, height, x, y){
-  if(object.type == "rect" || object.type == "image"){
-    if(width > 0){
-      object.attr("width", width)
-    }else{
-      object.attr("x", (x?x:object.attr("x"))+width)
-      object.attr("width", Math.abs(width)) 
-    }
-    if(height > 0){
-      object.attr("height", height)
-    }else{
-      object.attr("y", (y?y:object.attr("y"))+height)
-      object.attr("height", Math.abs(height)) 
-    }
-  }else if(object.type == "ellipse"){
-    if(width > 0){
-      object.attr("rx", width)
-    }else{
-      object.attr("x", (x?x:object.attr("x"))+width)
-      object.attr("rx", Math.abs(width)) 
-    }
-    if(height > 0){
-      object.attr("ry", height)
-    }else{
-      object.attr("y", (y?y:object.attr("y"))+height)
-      object.attr("ry", Math.abs(height)) 
-    }
-  }else if(object.type == "text"){
-    object.attr("font-size", Math.abs(width))
-  }
 }
 
 VectorEditor.prototype.onMouseDown = function(x, y, target){
@@ -328,27 +191,6 @@ VectorEditor.prototype.onMouseDown = function(x, y, target){
   }
 }
 
-VectorEditor.prototype.addShape = function(shape){
-  shape.node.shape_object = shape
-  this.selected = [shape]
-  this.shapes.push(shape)
-}
-
-VectorEditor.prototype.rectsIntersect = function(r1, r2) {
-  return r2.x < (r1.x+r1.width) && 
-          (r2.x+r2.width) > r1.x &&
-          r2.y < (r1.y+r1.height) &&
-          (r2.y+r2.height) > r1.y;
-}
-
-VectorEditor.prototype.drawGrid = function(){
-  this.draw.drawGrid(0, 0, 480, 272, 10, 10, "blue").toBack()
-}
-
-VectorEditor.prototype.move = function(shape, x, y){
-  shape.translate(x,y)
-}
-
 VectorEditor.prototype.onMouseMove = function(x, y, target){
       
   if(this.mode == "select" || this.mode == "delete"){
@@ -404,92 +246,11 @@ VectorEditor.prototype.onMouseMove = function(x, y, target){
   
 }
 
-VectorEditor.prototype.trackerBox = function(x, y){
-  var w = 4
-  return this.draw.rect(x - w, y - w, 2*w, 2*w).attr({
-    "stroke-width": 1,
-    "stroke": "green",
-    "fill": "white"
-  }).mouseover(function(){
-    this.attr("fill", "red")
-  }).mouseout(function(){
-    this.attr("fill", "white")
-  }).mousedown(function(){
-    //this.paper.editor.action = "rotate"
-  })
-}
-
-VectorEditor.prototype.trackerCircle = function(x, y){
-  var w = 5
-  return this.draw.ellipse(x, y, w, w).attr({
-    "stroke-width": 1,
-    "stroke": "green",
-    "fill": "white"
-  }).mouseover(function(){
-    this.attr("fill", "red")
-  }).mouseout(function(){
-    this.attr("fill", "white")
-  }).mousedown(function(){
-    this.paper.editor.action = "rotate"
-  })
-}
-
-
-VectorEditor.prototype.generateUUID = function(){
-  var uuid = ""
-  for(var i = 0; i < 16; i++){
-    uuid += "abcdefghijklmnopqrstuvwxyz0123456789".charAt(Math.floor(Math.random()*Math.min(36,26+i)))
-  }
-  return "shape:"+uuid;
-}
-
 
 VectorEditor.prototype.getMarkup = function(){
     return this.draw.canvas.parentNode.innerHTML;
 }
 
-
-VectorEditor.prototype.showTracker = function(shape){
-  var box = shape.getBBox();
-  var tracker = this.draw.set();
-  tracker.shape = shape;
-  if(shape.subtype == "line"){
-    var line = Raphael.parsePathString(shape.attr('path'));
-    tracker.push(this.trackerBox(line[0][1],line[0][2]))
-    tracker.push(this.trackerBox(line[1][1],line[1][2]))
-    this.trackers.push(tracker)
-  }else if(shape.type == "rect" || shape.type == "image"){
-    tracker.push(this.draw.rect(box.x - 10, box.y - 10, box.width + 20, box.height + 20).attr({"opacity":0.3}))
-    tracker.push(this.trackerBox(box.x - 10, box.y - 10))
-    tracker.push(this.trackerBox(box.x + box.width + 10, box.y - 10))
-    tracker.push(this.trackerBox(box.x + box.width + 10, box.y + box.height + 10))
-    tracker.push(this.trackerBox(box.x - 10, box.y + box.height + 10))
-    tracker.push(this.trackerCircle(box.x + box.width/2, box.y - 25))
-    this.trackers.push(tracker)
-  }else if(shape.type == "ellipse"){
-    tracker.push(this.trackerBox(box.x, box.y))
-    tracker.push(this.trackerBox(box.x + box.width, box.y))
-    tracker.push(this.trackerBox(box.x + box.width, box.y + box.height))
-    tracker.push(this.trackerBox(box.x, box.y + box.height))
-    tracker.push(this.trackerCircle(box.x + box.width/2, box.y - 25))
-    this.trackers.push(tracker)
-  }else{
-    tracker.push(this.draw.rect(box.x - 10, box.y - 10, box.width + 20, box.height + 20).attr({"opacity":0.3}))
-    tracker.push(this.trackerCircle(box.x + box.width/2, box.y - 25))
-    this.trackers.push(tracker)
-  }
-}
-
-VectorEditor.prototype.showGroupTracker = function(shape){
-  var tracker = this.draw.set();
-  var box = shape.getBBox();
-  tracker.push(this.draw.rect(box.x - 5, box.y - 5, box.width + 10, box.height + 10).attr({
-    "stroke-dasharray": "-",
-    "stroke": "blue"
-  }))
-  tracker.shape = shape;
-  this.trackers.push(tracker)
-}
 
 VectorEditor.prototype.onDblClick = function(x, y, target){
   if(this.selected.length == 1){
@@ -503,45 +264,7 @@ VectorEditor.prototype.onDblClick = function(x, y, target){
   }
 }
 
-VectorEditor.prototype.deleteSelection = function(){
-  while(this.selected.length > 0){
-    this.deleteShape(this.selected[0])
-  }
-}
 
-VectorEditor.prototype.deleteShape = function(shape){
-  if(shape && shape.node && shape.node.parentNode){
-    shape.remove()
-  }
-  for(var i = 0; i < this.trackers.length; i++){
-    if(this.trackers[i].shape == shape){
-      this.removeTracker(this.trackers[i]);
-    }
-  }
-  for(var i = 0; i < this.shapes.length; i++){
-    if(this.shapes[i] == shape){
-      this.shapes.splice(i, 1)
-    }
-  }
-  for(var i = 0; i < this.selected.length; i++){
-    if(this.selected[i] == shape){
-      this.selected.splice(i, 1)
-    }
-  }
-  //should remove references, but whatever
-}
-
-VectorEditor.prototype.deleteAll = function(){
-  this.draw.clear()
-  this.shapes = []
-  this.trackers = []
-}
-
-VectorEditor.prototype.clearShapes = function(){
-  while(this.shapes.length > 0){
-    this.deleteShape(this.shapes[0])
-  }
-}
 
 VectorEditor.prototype.onMouseUp = function(x, y, target){
   if(this.mode == "select" || this.mode == "delete"){
