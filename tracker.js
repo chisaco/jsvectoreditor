@@ -60,7 +60,9 @@ VectorEditor.prototype.updateTracker = function(tracker){
       this.updateTracker(this.trackers[i])
     }
   }else{
+    var shape = tracker.shape;
     var box = shape.getBBox();
+    
     //now here for the magic
     if(shape._ && shape._.rt && shape._.rt.deg > 0){
       tracker.rotate(shape._.rt.deg, (box.x + box.width/2), (box.y + box.height/2))
