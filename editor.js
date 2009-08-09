@@ -117,9 +117,7 @@ VectorEditor.prototype.removeTracker = function(tracker){
     while(this.trackers.length > 0){
       this.removeTracker(this.trackers[0]);
     }
-    //this.trackers = []
   }else{
-    //try {
     tracker.remove();
     
     for(var i = 0; i < this.trackers.length; i++){
@@ -127,11 +125,6 @@ VectorEditor.prototype.removeTracker = function(tracker){
         this.trackers.splice(i, 1)
       }
     }
-    //else if(tracker.shape){
-    //  this.removeTracker(tracker.shape)
-    
-    //}
-    //}catch(err){}
   }
 }
 
@@ -171,6 +164,32 @@ VectorEditor.prototype.select = function(shape){
   this.unselect()
   this.selected = [shape]
   this.showTracker(shape)
+}
+
+
+
+VectorEditor.prototype.scale = function(shape, corner, x, y){
+  var xp = 0, yp = 0
+  var box = shape.getBBox()
+  switch(corner){
+    case "tr":
+      xp = box.x
+      yp = box.y + box.height
+      break;
+    case "bl":
+      xp = box.x + box.width
+      yp = box.y
+      break;
+    case "tl":
+      xp = box.x + box.width;
+      yp = box.y + box.height;
+    break;
+    case "br":
+      xp = box.x
+      yp = box.y
+    break;
+  }
+  shape.scale(x, y, xp, yp)
 }
 
 VectorEditor.prototype.resize = function(object, width, height, x, y){
@@ -282,13 +301,6 @@ VectorEditor.prototype.drawGrid = function(){
 
 VectorEditor.prototype.move = function(shape, x, y){
   shape.translate(x,y)
-  //if(shape.type == "rect" || shape.type == "image"){
-  //  shape.attr('x', shape.attr('x') + x)
-  //  shape.attr('y', shape.attr('y') + y)
-  //}else if(shape.type == "ellipse"){
-  //  shape.attr('rx', shape.attr('rx') + x)
-  //  shape.attr('ry', shape.attr('ry') + y)
-  //}
 }
 
 VectorEditor.prototype.onMouseMove = function(x, y, target){
@@ -341,9 +353,8 @@ VectorEditor.prototype.trackerBox = function(x, y){
   }).mouseout(function(){
     this.attr("fill", "white")
   }).mousedown(function(){
-  
-  }).mousemove(function(){
-  }).mouseup(function(){
+    this.action = "blah"
+    console.log('BLAH')
   })
 }
 
