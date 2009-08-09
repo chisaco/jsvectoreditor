@@ -152,7 +152,7 @@ VectorEditor.prototype.showTracker = function(shape){
 VectorEditor.prototype.showGroupTracker = function(shape){
   var tracker = this.draw.set();
   var box = shape.getBBox();
-  tracker.push(this.draw.rect(box.x - 5, box.y - 5, box.width + 10, box.height + 10).attr({
+  tracker.push(this.draw.rect(5, 5, box.width + 10, box.height + 10).attr({
     "stroke-dasharray": "-",
     "stroke": "blue"
   }))
