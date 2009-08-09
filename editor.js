@@ -203,7 +203,8 @@ VectorEditor.prototype.onMouseMove = function(x, y, target){
         }
         //this.moveTracker(x - this.tmpXY[0], y - this.tmpXY[1])
         this.updateTracker();
-        this.tmpXY = [x, y]
+        this.tmpXY = [x, y];
+        
       }else if(this.action == "rotate"){
         //no multi-rotate
         var box = this.selected[0].getBBox()
