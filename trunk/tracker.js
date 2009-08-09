@@ -157,5 +157,10 @@ VectorEditor.prototype.showGroupTracker = function(shape){
     "stroke": "blue"
   }))
   tracker.shape = shape;
+  //define the origin to transform to
+  tracker.lastx = 0 //if zero then easier
+  tracker.lasty = 0 //if zero then easier
   this.trackers.push(tracker)
+  
+  this.updateTracker(tracker)
 }
