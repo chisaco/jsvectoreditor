@@ -1,5 +1,3 @@
-
-
 VectorEditor.prototype.unselect = function(shape){
   if(!shape){
     this.selected = [];
@@ -55,37 +53,29 @@ VectorEditor.prototype.removeTracker = function(tracker){
   }
 }
 
-VectorEditor.prototype.rotateTracker = function(a, x, y){
-  for(var i = 0; i < this.trackers.length; i++){
-    var el = this.trackers[i]
-    el.rotate(a, x, y)
-  }
-}
 
-VectorEditor.prototype.moveTracker = function(x, y){
-  for(var i = 0; i < this.trackers.length; i++){
-    var el = this.trackers[i]
-    /*
-    for(var k = 0; k < el.length; k++){
-      var box = el[k].getBBox()
-      //el[k].attr("x", box.x + x);
-      //el[k].attr("y", box.y + y);
-      el[k].translate(x,y)
-    }
-    */
-    el.translate(x,y)
-  }
-}
 VectorEditor.prototype.updateTracker = function(tracker){
   if(!tracker){
     for(var i = 0; i < this.trackers.length; i++){
       this.updateTracker(this.trackers[i])
     }
   }else{
+    var box = shape.getBBox();
+    //now here for the magic
     if(shape._ && shape._.rt && shape._.rt.deg > 0){
-      this.rotateTracker(shape._.rt.deg, (box.x + box.width/2), (box.y + box.height/2))
+      tracker.rotate(shape._.rt.deg, (box.x + box.width/2), (box.y + box.height/2))
     }
-    
+    //i wish my code could be as dated as possible by referencing pieces of culture
+    //though I *hope* nobody needs to use svg/vml whatever in the near future
+    //there coudl be a lot of better things
+    //and svg-edit is a better project
+    //so if the future even uses raphael, then microsoft really sucks
+    //it truly is "more evil than satan himself" which is itself dated even for the time of writing
+    //and am I ever gonna read this? If it's someone that's not me that's reading this
+    //please tell me (if year > 2010 or otherwise)
+    tracker.translate(box.x - tracker.lastx, box.y - tracker.lasty)
+    tracker.lastx = box.x//y = boxxy trollin!
+    tracker.lasty = box.y
   }
 }
 VectorEditor.prototype.trackerBox = function(x, y){
@@ -123,6 +113,8 @@ VectorEditor.prototype.showTracker = function(shape){
   var box = shape.getBBox();
   var tracker = this.draw.set();
   tracker.shape = shape;
+  tracker.lastx = box.x //if zero then easier
+  tracker.lasty = box.y //if zero then easier
   if(shape.subtype == "line"){
     var line = Raphael.parsePathString(shape.attr('path'));
     tracker.push(this.trackerBox(line[0][1],line[0][2]))
@@ -148,6 +140,7 @@ VectorEditor.prototype.showTracker = function(shape){
     tracker.push(this.trackerCircle(box.x + box.width/2, box.y - 25))
     this.trackers.push(tracker)
   }
+  this.updateTracker(tracker)
 }
 
 VectorEditor.prototype.showGroupTracker = function(shape){
