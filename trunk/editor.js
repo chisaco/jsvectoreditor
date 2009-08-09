@@ -72,10 +72,8 @@ VectorEditor.prototype.setMode = function(mode){
     this.unselect()
     this.selectadd = false;
   }else if(mode == "delete"){
-    for(var i = 0; i < this.selected.length; i++){
-      this.deleteShape(this.selected[i])
-    }
-    this.selected = [];
+    this.deleteSelection();
+    this.mode = mode;
   }else{
     this.unselect()
     this.mode = mode;
@@ -252,6 +250,25 @@ VectorEditor.prototype.onMouseDown = function(x, y, target){
       }
       this.offsetXY = [shape_object.attr("x") - x,shape_object.attr("y") - y]
     }
+  }else if(this.mode == "delete" && !this.selectbox){
+    if(this.isCanvas(target)){
+      this.selectbox = this.draw.rect(x, y, 0, 0)
+        .attr({"fill-opacity": 0.15, 
+              "stroke-opacity": 0.5, 
+              "fill": "#ff0000", //mah fav kolur!
+              "stroke": "#ff0000"});
+    }else{
+      var shape_object = null
+      if(target.shape_object){
+        shape_object = target.shape_object
+      }else if(target.parentNode.shape_object){
+        shape_object = target.parentNode.shape_object
+      }else{
+        return; //likely tracker
+      }
+      this.deleteShape(shape_object)
+      this.offsetXY = [shape_object.attr("x") - x,shape_object.attr("y") - y]
+    }
   }else if(this.selected.length == 0){
     var shape = null;
     if(this.mode == "rect"){
@@ -306,10 +323,10 @@ VectorEditor.prototype.move = function(shape, x, y){
 
 VectorEditor.prototype.onMouseMove = function(x, y, target){
       
-  if(this.mode == "select"){
+  if(this.mode == "select" || this.mode == "delete"){
     if(this.selectbox){
       this.resize(this.selectbox, x - this.onHitXY[0], y - this.onHitXY[1], this.onHitXY[0], this.onHitXY[1])
-    }else{
+    }else if(this.mode == "select"){
       if(this.action == "move"){
         for(var i = 0; i < this.selected.length; i++){
           this.move(this.selected[i], x - this.tmpXY[0], y - this.tmpXY[1])
@@ -444,6 +461,12 @@ VectorEditor.prototype.onDblClick = function(x, y, target){
   }
 }
 
+VectorEditor.prototype.deleteSelection = function(){
+  while(this.selected.length > 0){
+    this.deleteShape(this.selected[0])
+  }
+}
+
 VectorEditor.prototype.deleteShape = function(shape){
   if(shape && shape.node && shape.node.parentNode){
     shape.remove()
@@ -456,6 +479,11 @@ VectorEditor.prototype.deleteShape = function(shape){
   for(var i = 0; i < this.shapes.length; i++){
     if(this.shapes[i] == shape){
       this.shapes.splice(i, 1)
+    }
+  }
+  for(var i = 0; i < this.selected.length; i++){
+    if(this.selected[i] == shape){
+      this.selected.splice(i, 1)
     }
   }
   //should remove references, but whatever
@@ -474,7 +502,7 @@ VectorEditor.prototype.clearShapes = function(){
 }
 
 VectorEditor.prototype.onMouseUp = function(x, y, target){
-  if(this.mode == "select"){
+  if(this.mode == "select" || this.mode == "delete"){
     if(this.selectbox){
       var sbox = this.selectbox.getBBox()
       var new_selected = [];
@@ -497,6 +525,10 @@ VectorEditor.prototype.onMouseUp = function(x, y, target){
         this.selectbox.remove()
       }
       this.selectbox = null;
+      
+      if(this.mode == "delete"){
+        this.deleteSelection();
+      }
       
     }else{
       this.action = "";
