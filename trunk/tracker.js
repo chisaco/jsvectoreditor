@@ -115,8 +115,12 @@ VectorEditor.prototype.showTracker = function(shape){
   var box = shape.getBBox();
   var tracker = this.draw.set();
   tracker.shape = shape;
+  
+  //define the origin to transform to
   tracker.lastx = 0 //if zero then easier
   tracker.lasty = 0 //if zero then easier
+  
+  //draw everything relative to origin (0,0) because it gets transformed later
   if(shape.subtype == "line"){
     var line = Raphael.parsePathString(shape.attr('path'));
     tracker.push(this.trackerBox(line[0][1],line[0][2]))
