@@ -331,7 +331,7 @@ VectorEditor.prototype.onMouseMove = function(x, y, target){
       //this.selected[0].path[this.selected[0].path.length - 1].arg[0] = x
       //this.selected[0].path[this.selected[0].path.length - 1].arg[1] = y
       //this.selected[0].redraw();
-      var pathsplit = this.selected[0].attr("path").split(" ");
+      var pathsplit = this.selected[0].attr("path").replace(/,/g, " ").split(" ");
       if(pathsplit.length > 3){
         var hack = pathsplit.reverse().slice(3).reverse().join(" ")+' ';
         //its such a pity that raphael has lost the ability to do it without hacks -_-
