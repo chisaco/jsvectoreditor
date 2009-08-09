@@ -218,6 +218,13 @@ VectorEditor.prototype.resize = function(object, width, height, x, y){
       object.attr("y", (y?y:object.attr("y"))+height)
       object.attr("ry", Math.abs(height)) 
     }
+  }else if(object.type == "text"){
+    if(width > 0){
+      object.attr("font-size", width)
+    }else{
+      object.attr("x", (x?x:object.attr("x"))+width)
+      object.attr("font-size", Math.abs(width)) 
+    }
   }
 }
 
@@ -341,6 +348,8 @@ VectorEditor.prototype.onMouseMove = function(x, y, target){
     }else if(this.mode == "image"){
       this.resize(this.selected[0], x - this.onHitXY[0], y - this.onHitXY[1], this.onHitXY[0], this.onHitXY[1])
     }else if(this.mode == "ellipse"){
+      this.resize(this.selected[0], x - this.onHitXY[0], y - this.onHitXY[1], this.onHitXY[0], this.onHitXY[1])
+    }else if(this.mode == "text"){
       this.resize(this.selected[0], x - this.onHitXY[0], y - this.onHitXY[1], this.onHitXY[0], this.onHitXY[1])
     }else if(this.mode == "path"){
       this.selected[0].lineTo(x, y);
