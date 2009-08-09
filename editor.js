@@ -15,6 +15,8 @@ function VectorEditor(elem, width, height){
     this.container = elem
     this.draw = Raphael(elem, width, height);
     
+    this.draw.editor = this;
+    
     this.onHitXY = [0,0]
     this.offsetXY = [0,0]
     this.tmpXY = [0,0]
@@ -126,14 +128,25 @@ VectorEditor.prototype.removeTracker = function(tracker){
   }
 }
 
+VectorEditor.prototype.rotateTracker = function(a, x, y){
+  for(var i = 0; i < this.trackers.length; i++){
+    var el = this.trackers[i]
+    el.rotate(a, x, y)
+  }
+}
+
 VectorEditor.prototype.moveTracker = function(x, y){
   for(var i = 0; i < this.trackers.length; i++){
     var el = this.trackers[i]
+    /*
     for(var k = 0; k < el.length; k++){
       var box = el[k].getBBox()
-      el[k].attr("x", box.x + x);
-      el[k].attr("y", box.y + y);
+      //el[k].attr("x", box.x + x);
+      //el[k].attr("y", box.y + y);
+      el[k].translate(x,y)
     }
+    */
+    el.translate(x,y)
   }
 }
 
@@ -219,12 +232,7 @@ VectorEditor.prototype.resize = function(object, width, height, x, y){
       object.attr("ry", Math.abs(height)) 
     }
   }else if(object.type == "text"){
-    if(width > 0){
-      object.attr("font-size", width)
-    }else{
-      object.attr("x", (x?x:object.attr("x"))+width)
-      object.attr("font-size", Math.abs(width)) 
-    }
+    object.attr("font-size", Math.abs(width))
   }
 }
 
@@ -340,6 +348,11 @@ VectorEditor.prototype.onMouseMove = function(x, y, target){
         }
         this.moveTracker(x - this.tmpXY[0], y - this.tmpXY[1])
         this.tmpXY = [x, y]
+      }else if(this.action == "rotate"){
+        //no multi-rotate
+        var box = this.selected[0].getBBox()
+        var rad = Math.atan2(y - (box.y + box.height/2), x - (box.x + box.width/2))
+        this.selected[0].rotate(((rad * (180/Math.PI))+90) % 360, true); //absolute!
       }
     }
   }else if(this.selected.length == 1){
@@ -387,10 +400,25 @@ VectorEditor.prototype.trackerBox = function(x, y){
   }).mouseout(function(){
     this.attr("fill", "white")
   }).mousedown(function(){
-    this.action = "blah"
-    console.log('BLAH')
+    //this.paper.editor.action = "rotate"
   })
 }
+
+VectorEditor.prototype.trackerCircle = function(x, y){
+  var w = 5
+  return this.draw.ellipse(x, y, w, w).attr({
+    "stroke-width": 1,
+    "stroke": "green",
+    "fill": "white"
+  }).mouseover(function(){
+    this.attr("fill", "red")
+  }).mouseout(function(){
+    this.attr("fill", "white")
+  }).mousedown(function(){
+    this.paper.editor.action = "rotate"
+  })
+}
+
 
 VectorEditor.prototype.generateUUID = function(){
   var uuid = ""
@@ -413,7 +441,6 @@ VectorEditor.prototype.showTracker = function(shape){
     tracker.shape = shape;
     tracker.push(this.trackerBox(line[0][1],line[0][2]))
     tracker.push(this.trackerBox(line[1][1],line[1][2]))
-    
     this.trackers.push(tracker)
   }else if(shape.type == "rect" || shape.type == "image"){
     var tracker = this.draw.set();
@@ -424,7 +451,7 @@ VectorEditor.prototype.showTracker = function(shape){
     tracker.push(this.trackerBox(box.x + box.width + 10, box.y - 10))
     tracker.push(this.trackerBox(box.x + box.width + 10, box.y + box.height + 10))
     tracker.push(this.trackerBox(box.x - 10, box.y + box.height + 10))
-    
+    tracker.push(this.trackerCircle(box.x + box.width/2, box.y - 25))
     this.trackers.push(tracker)
   }else if(shape.type == "ellipse"){
     var tracker = this.draw.set();
@@ -434,13 +461,14 @@ VectorEditor.prototype.showTracker = function(shape){
     tracker.push(this.trackerBox(box.x + box.width, box.y))
     tracker.push(this.trackerBox(box.x + box.width, box.y + box.height))
     tracker.push(this.trackerBox(box.x, box.y + box.height))
-    
+    tracker.push(this.trackerCircle(box.x + box.width/2, box.y - 25))
     this.trackers.push(tracker)
   }else{
     var tracker = this.draw.set();
     var box = shape.getBBox();
     tracker.shape = shape;
     tracker.push(this.draw.rect(box.x - 10, box.y - 10, box.width + 20, box.height + 20).attr({"opacity":0.3}))
+    tracker.push(this.trackerCircle(box.x + box.width/2, box.y - 25))
     this.trackers.push(tracker)
   }
 }
