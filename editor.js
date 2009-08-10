@@ -146,6 +146,11 @@ VectorEditor.prototype.set_attr = function(){
   }
 }
 
+VectorEditor.prototype.set = function(name, value){
+  this.prop[name] = value;
+  this.set_attr(name, value);
+}
+
 VectorEditor.prototype.isCanvas = function(element){
   return element == this.draw.canvas || //yay for Firefox and Opera!
          element == this.container || //erm.. makes sense for Webkit
