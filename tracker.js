@@ -91,7 +91,7 @@ VectorEditor.prototype.updateTracker = function(tracker){
 }
 VectorEditor.prototype.trackerBox = function(x, y, action){
   var w = 4
-  return this.draw.rect(x - w, y - w, 2*w, 2*w).attr({
+  var shape = this.draw.rect(x - w, y - w, 2*w, 2*w).attr({
     "stroke-width": 1,
     "stroke": "green",
     "fill": "white"
@@ -102,11 +102,13 @@ VectorEditor.prototype.trackerBox = function(x, y, action){
   }).mousedown(function(){
     this.paper.editor.action = action;
   })
+  shape.node.is_tracker = true;
+  return shape;
 }
 
 VectorEditor.prototype.trackerCircle = function(x, y){
   var w = 5
-  return this.draw.ellipse(x, y, w, w).attr({
+  var shape = this.draw.ellipse(x, y, w, w).attr({
     "stroke-width": 1,
     "stroke": "green",
     "fill": "white"
@@ -120,6 +122,8 @@ VectorEditor.prototype.trackerCircle = function(x, y){
     this.paper.editor.trackers[0].shape.rotate(0, true); //absolute!
     this.paper.editor.updateTracker();
   });
+  shape.node.is_tracker = true;
+  return shape;
 }
 
 
