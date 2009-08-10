@@ -20,9 +20,15 @@ function VectorEditor(elem, width, height){
     this.onHitXY = [0,0]
     this.offsetXY = [0,0]
     this.tmpXY = [0,0]
-    
-    this.fill =   "#ff0000"; //red
-    this.stroke = "#000000"; //black
+
+    this.prop = {
+      "src": "http://upload.wikimedia.org/wikipedia/commons/a/a5/ComplexSinInATimeAxe.gif",
+      "stroke-width": 1,
+      "stroke": "#000000",
+      "fill": "#ff0000",
+      "stroke-opacity": 1,
+      "fill-opacity": 1
+    }
     
     this.mode = "select";
     this.selectbox = null;
@@ -34,6 +40,9 @@ function VectorEditor(elem, width, height){
     
     this.shapes = []
     this.trackers = []
+    
+    this.listeners = {};
+    
     
     var draw = this.draw;
     
@@ -71,6 +80,7 @@ function VectorEditor(elem, width, height){
 }
 
 VectorEditor.prototype.setMode = function(mode){
+  this.fire("setmode",mode)
   if(mode == "select+"){
     this.mode = "select";
     this.selectadd = true;
@@ -88,6 +98,31 @@ VectorEditor.prototype.setMode = function(mode){
   }
 }
 
+VectorEditor.prototype.on = function(event, callback){
+  if(!this.listeners[event]){
+    this.listeners[event] = []
+  }
+  if(this.in_array(callback,this.listeners[event]) != -1){
+    this.listeners[event].push(callback);
+  }
+}
+
+VectorEditor.prototype.fire = function(event){
+  if(this.listeners[event]){
+    for(var i = 0; i < this.listeners[event].length; i++){
+      this.listeners[event][i].apply(this, arguments)
+    }
+  }
+}
+
+VectorEditor.prototype.un = function(event, callback){
+  if(!this.listeners[event])return;
+  var index = 0;
+  while((index = this.in_array(callback,this.listeners[event])) != -1){
+    this.listeners[event].splice(index,1);
+  }
+}
+
 //from the vXJS JS Library
 VectorEditor.prototype.in_array = function(v,a){
   for(var i=a.length;i--&&a[i]!=v;);
@@ -100,11 +135,16 @@ VectorEditor.prototype.array_remove = function(e, o){
   x!=-1?o.splice(x,1):0
 }
 
+
 VectorEditor.prototype.is_selected = function(shape){
   return this.in_array(shape, this.selected) != -1;
 }
 
-
+VectorEditor.prototype.set_attr = function(){
+  for(var i = 0; i < this.selected.length; i++){
+    this.selected[i].attr.apply(this, arguments)
+  }
+}
 
 VectorEditor.prototype.isCanvas = function(element){
   return element == this.draw.canvas || //yay for Firefox and Opera!
@@ -113,6 +153,7 @@ VectorEditor.prototype.isCanvas = function(element){
 }
 
 VectorEditor.prototype.onMouseDown = function(x, y, target){
+  this.fire("mousedown")
   this.tmpXY = this.onHitXY = [x,y]
   
   if(this.mode == "select" && !this.selectbox){
@@ -146,7 +187,7 @@ VectorEditor.prototype.onMouseDown = function(x, y, target){
       this.selectbox = this.draw.rect(x, y, 0, 0)
         .attr({"fill-opacity": 0.15, 
               "stroke-opacity": 0.5, 
-              "fill": "#ff0000", //mah fav kolur!
+              "fill": "#ff0000", //oh noes! its red and gonna asplodes!
               "stroke": "#ff0000"});
     }else{
       var shape_object = null
@@ -175,13 +216,19 @@ VectorEditor.prototype.onMouseDown = function(x, y, target){
       shape = this.draw.path({}).moveTo(x, y)
       shape.subtype = "polygon"
     }else if(this.mode == "image"){
-      shape = this.draw.image("http://upload.wikimedia.org/wikipedia/commons/a/a5/ComplexSinInATimeAxe.gif", x, y, 0, 0);
+      shape = this.draw.image(this.prop.src, x, y, 0, 0);
     }else if(this.mode == "text"){
-      shape = this.draw.text(x, y, "elitist").attr("font-size",20)
+      shape = this.draw.text(x, y, this.prop['text'])
     }
     if(shape){
       shape.id = this.generateUUID();
-      shape.attr({fill: this.fill, stroke: this.stroke})
+      shape.attr({
+          "fill": this.prop.fill, 
+          "stroke": this.prop.stroke,
+          "stroke-width": this.prop["stroke-width"],
+          "fill-opacity": this.prop['fill-opacity'],
+          "stroke-opacity": this.prop["stroke-opacity"]
+      })
       this.addShape(shape)
     }
   }else{
@@ -192,7 +239,7 @@ VectorEditor.prototype.onMouseDown = function(x, y, target){
 }
 
 VectorEditor.prototype.onMouseMove = function(x, y, target){
-      
+  this.fire("mousemove")
   if(this.mode == "select" || this.mode == "delete"){
     if(this.selectbox){
       this.resize(this.selectbox, x - this.onHitXY[0], y - this.onHitXY[1], this.onHitXY[0], this.onHitXY[1])
@@ -268,6 +315,7 @@ VectorEditor.prototype.getMarkup = function(){
 
 
 VectorEditor.prototype.onDblClick = function(x, y, target){
+  this.fire("dblclick")
   if(this.selected.length == 1){
     if(this.selected[0].getBBox().height == 0 && this.selected[0].getBBox().width == 0){
       this.deleteShape(this.selected[0])
@@ -282,6 +330,7 @@ VectorEditor.prototype.onDblClick = function(x, y, target){
 
 
 VectorEditor.prototype.onMouseUp = function(x, y, target){
+  this.fire("mouseup")
   if(this.mode == "select" || this.mode == "delete"){
     if(this.selectbox){
       var sbox = this.selectbox.getBBox()

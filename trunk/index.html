@@ -13,6 +13,49 @@
     <button onclick="editor.setMode('text')">Text</button>
     <button onclick="editor.setMode('delete')">Delete</button>
     <button onclick="alert(editor.getMarkup())">Markup</button>
+    <br>
+
+    <span>Fill:</span> 
+    <select id="fillcolor" onchange="setFillColor(this);"> 
+      <option style="background-color:red;" selected value="red"></option> 
+      <option style="background-color:blue;" value="blue"></option> 
+      <option style="background-color:green;" value="green"></option> 
+      <option style="background-color:yellow;" value="yellow"></option> 
+      <option style="background-color:aqua;" value="aqua"></option> 
+      <option style="background-color:white;" value="">None</option> 
+    </select> 
+    <select id="fillopacity" onchange="setStrokeWidth(this);"> 
+      <option value="1">100%</option> 
+      <option value=".75">75%</option> 
+      <option value=".5">50%</option> 
+      <option value=".25">25%</option> 
+    </select> 
+    <span>Stroke:</span> 
+    <select id="strokecolor" onchange="setLineColor(this);"> 
+      <option style="background-color:black;" selected value="black"></option> 
+      <option style="background-color:red;" value="red"></option> 
+      <option style="background-color:blue;" value="blue"></option> 
+      <option style="background-color:green;" value="green"></option> 
+      <option style="background-color:yellow;" value="yellow"></option> 
+      <option style="background-color:aqua;" value="aqua"></option> 
+      <option style="background-color:white;" value="">None</option> 
+    </select> 
+    <select id="strokewidth" onchange="setStrokeWidth(this);"> 
+      <option value="1px">1px</option> 
+      <option value="2px">2px</option> 
+      <option value="3px">3px</option> 
+      <option value="5px">5px</option> 
+      <option value="7px">7px</option> 
+    </select> 
+    
+    <select id="strokeopacity" onchange="setStrokeWidth(this);"> 
+      <option value="1">100%</option> 
+      <option value=".75">75%</option> 
+      <option value=".5">50%</option> 
+      <option value=".25">25%</option> 
+    </select> 
+    
+    
     <hr>
     <ul style="font-size: 10px;margin: 0;padding: 0">
       <li>Select tool can be used to select individual objects by clicking them</li>

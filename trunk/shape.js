@@ -5,6 +5,7 @@ VectorEditor.prototype.deleteSelection = function(){
 }
 
 VectorEditor.prototype.deleteShape = function(shape){
+  this.fire("delete",shape)
   if(shape && shape.node && shape.node.parentNode){
     shape.remove()
   }
@@ -27,12 +28,14 @@ VectorEditor.prototype.deleteShape = function(shape){
 }
 
 VectorEditor.prototype.deleteAll = function(){
+  this.fire("clear2")
   this.draw.clear()
   this.shapes = []
   this.trackers = []
 }
 
 VectorEditor.prototype.clearShapes = function(){
+  this.fire("clear")
   while(this.shapes.length > 0){
     this.deleteShape(this.shapes[0])
   }
@@ -48,6 +51,7 @@ VectorEditor.prototype.generateUUID = function(){
 
 
 VectorEditor.prototype.addShape = function(shape){
+  this.fire("addshape",shape)
   shape.node.shape_object = shape
   this.selected = [shape]
   this.shapes.push(shape)

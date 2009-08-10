@@ -1,4 +1,5 @@
 VectorEditor.prototype.unselect = function(shape){
+  this.fire("unselect")
   if(!shape){
     this.selected = [];
     this.removeTracker();
@@ -15,6 +16,7 @@ VectorEditor.prototype.unselect = function(shape){
 
 VectorEditor.prototype.selectAdd = function(shape){
   if(this.is_selected(shape) == false){
+    this.fire("selectadd",shape)
     this.selected.push(shape)
     this.showGroupTracker(shape);
   }
@@ -22,14 +24,14 @@ VectorEditor.prototype.selectAdd = function(shape){
 
 VectorEditor.prototype.selectToggle = function(shape){
   if(this.is_selected(shape) == false){
-    this.selected.push(shape)
-    this.showGroupTracker(shape)
+    this.selectAdd(shape)
   }else{
     this.unselect(shape)
   }
 }
 
 VectorEditor.prototype.select = function(shape){
+  this.fire("select",shape)
   this.unselect()
   this.selected = [shape]
   this.showTracker(shape)
