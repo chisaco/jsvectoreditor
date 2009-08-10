@@ -27,7 +27,8 @@ function VectorEditor(elem, width, height){
       "stroke": "#000000",
       "fill": "#ff0000",
       "stroke-opacity": 1,
-      "fill-opacity": 1
+      "fill-opacity": 1,
+      "text": "elitist"
     }
     
     this.mode = "select";
@@ -142,7 +143,7 @@ VectorEditor.prototype.is_selected = function(shape){
 
 VectorEditor.prototype.set_attr = function(){
   for(var i = 0; i < this.selected.length; i++){
-    this.selected[i].attr.apply(this, arguments)
+    this.selected[i].attr.apply(this.selected[i], arguments)
   }
 }
 
@@ -217,7 +218,7 @@ VectorEditor.prototype.onMouseDown = function(x, y, target){
     }else if(this.mode == "image"){
       shape = this.draw.image(this.prop.src, x, y, 0, 0);
     }else if(this.mode == "text"){
-      shape = this.draw.text(x, y, this.prop['text'])
+      shape = this.draw.text(x, y, this.prop['text']).attr('font-size',0)
     }
     if(shape){
       shape.id = this.generateUUID();
