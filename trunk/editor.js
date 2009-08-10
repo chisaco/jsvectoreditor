@@ -21,6 +21,7 @@ function VectorEditor(elem, width, height){
     this.offsetXY = [0,0]
     this.tmpXY = [0,0]
 
+    //cant think of any better way to do it
     this.prop = {
       "src": "http://upload.wikimedia.org/wikipedia/commons/a/a5/ComplexSinInATimeAxe.gif",
       "stroke-width": 1,
