@@ -1,5 +1,5 @@
-<body bgcolor="#d3d3d3">
-  <div id="canvas" style="background-color: white; position: absolute;top:0;left:0; width: 480px; height: 272px; top: 100px; left: 20px"></div>
+<body>
+  <div id="canvas" style="background-color: #d3d3d3; position: absolute;top:0;left:0; width: 100%; height: 100%; top: 0px; left: 0px"></div>
 
   <div style="position: absolute; top: 10px; left: 10px;">
     <button onclick="editor.setMode('select')">Select</button>
@@ -82,7 +82,12 @@
   <script type="text/javascript" src="tracker.js"></script>
   <script type="text/javascript">
     $(document).ready(function(){
-      editor = new VectorEditor(document.getElementById("canvas"), 480, 272);
+      editor = new VectorEditor(document.getElementById("canvas"), $(window).width(),$(window).height());
+      editor.draw.rect(100,100,480,272).attr("stroke-width", 0).attr("fill", "white")
+    })
+    $(window).resize(function(){
+      editor.draw.setSize($(window).width(),$(window).height())
+      
     })
     
   function setFillColor(colors) {

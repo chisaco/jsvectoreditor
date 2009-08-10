@@ -151,61 +151,55 @@ VectorEditor.prototype.set = function(name, value){
   this.set_attr(name, value);
 }
 
-VectorEditor.prototype.isCanvas = function(element){
-  return element == this.draw.canvas || //yay for Firefox and Opera!
-         element == this.container || //erm.. makes sense for Webkit
-         (Raphael.vml && element == this.draw.canvas.parentNode); //IE.. uh...
-}
-
 VectorEditor.prototype.onMouseDown = function(x, y, target){
   this.fire("mousedown")
   this.tmpXY = this.onHitXY = [x,y]
   
   if(this.mode == "select" && !this.selectbox){
-    if(this.isCanvas(target)){
+
+    var shape_object = null
+    if(target.shape_object){
+      shape_object = target.shape_object
+    }else if(target.parentNode.shape_object){
+      shape_object = target.parentNode.shape_object
+    }else if(!target.is_tracker){
       if(!this.selectadd) this.unselect();
       this.selectbox = this.draw.rect(x, y, 0, 0)
         .attr({"fill-opacity": 0.15, 
               "stroke-opacity": 0.5, 
               "fill": "#007fff", //mah fav kolur!
               "stroke": "#007fff"});
+      return; 
     }else{
-      var shape_object = null
-      if(target.shape_object){
-        shape_object = target.shape_object
-      }else if(target.parentNode.shape_object){
-        shape_object = target.parentNode.shape_object
-      }else{
-        return; //likely tracker
-      }
-      if(this.selected.length > 1 || this.selectadd){
-        this.selectAdd(shape_object);
-        this.action = "move";
-      }else{
-        this.select(shape_object);
-        this.action = "move";
-      }
-      this.offsetXY = [shape_object.attr("x") - x,shape_object.attr("y") - y]
+      return;
     }
+    if(this.selected.length > 1 || this.selectadd){
+      this.selectAdd(shape_object);
+      this.action = "move";
+    }else{
+      this.select(shape_object);
+      this.action = "move";
+    }
+    this.offsetXY = [shape_object.attr("x") - x,shape_object.attr("y") - y]
+    
   }else if(this.mode == "delete" && !this.selectbox){
-    if(this.isCanvas(target)){
+    var shape_object = null
+    if(target.shape_object){
+      shape_object = target.shape_object
+    }else if(target.parentNode.shape_object){
+      shape_object = target.parentNode.shape_object
+    }else if(!target.is_tracker){
       this.selectbox = this.draw.rect(x, y, 0, 0)
         .attr({"fill-opacity": 0.15, 
               "stroke-opacity": 0.5, 
               "fill": "#ff0000", //oh noes! its red and gonna asplodes!
               "stroke": "#ff0000"});
+      return;
     }else{
-      var shape_object = null
-      if(target.shape_object){
-        shape_object = target.shape_object
-      }else if(target.parentNode.shape_object){
-        shape_object = target.parentNode.shape_object
-      }else{
-        return; //likely tracker
-      }
-      this.deleteShape(shape_object)
-      this.offsetXY = [shape_object.attr("x") - x,shape_object.attr("y") - y]
+      return; //likely tracker
     }
+    this.deleteShape(shape_object)
+    this.offsetXY = [shape_object.attr("x") - x,shape_object.attr("y") - y]
   }else if(this.selected.length == 0){
     var shape = null;
     if(this.mode == "rect"){
