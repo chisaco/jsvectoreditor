@@ -213,6 +213,15 @@ VectorEditor.prototype.onMouseMove = function(x, y, target){
         this.selected[0].rotate(deg, true); //absolute!
         //this.rotateTracker(deg, (box.x + box.width/2), (box.y + box.height/2))
         this.updateTracker();
+      }else if(this.action.substr(0,4) == "path"){
+        var num = parseInt(this.action.substr(4))
+        var pathsplit = Raphael.parsePathString(this.selected[0].attr("path"))
+        if(pathsplit[num]){
+          pathsplit[num][1] = x
+          pathsplit[num][2] = y
+          this.selected[0].attr("path", pathsplit)
+          this.updateTracker()
+        }
       }
     }
   }else if(this.selected.length == 1){

@@ -62,7 +62,14 @@ VectorEditor.prototype.updateTracker = function(tracker){
   }else{
     var shape = tracker.shape;
     var box = shape.getBBox();
-    
+    //this is somewhat hackish, if someone finds a better way to do it...
+    if(shape.type == "path" && this.action.substr(0,4) == "path"){
+      var pathsplit = Raphael.parsePathString(shape.attr("path"))
+      tracker[0].attr({cx: box.x + box.width/2, cy: box.y + box.height/2})
+      tracker[1].attr({x: pathsplit[0][1]-2, y: pathsplit[0][2]-2})
+      tracker[2].attr({x: pathsplit[1][1]-2, y: pathsplit[1][2]-2})
+      return;
+    }
     //now here for the magic
     if(shape._ && shape._.rt){
       tracker.rotate(shape._.rt.deg, (box.x + box.width/2), (box.y + box.height/2))
@@ -80,7 +87,7 @@ VectorEditor.prototype.updateTracker = function(tracker){
     tracker.lasty = box.y
   }
 }
-VectorEditor.prototype.trackerBox = function(x, y){
+VectorEditor.prototype.trackerBox = function(x, y, action){
   var w = 4
   return this.draw.rect(x - w, y - w, 2*w, 2*w).attr({
     "stroke-width": 1,
@@ -91,7 +98,7 @@ VectorEditor.prototype.trackerBox = function(x, y){
   }).mouseout(function(){
     this.attr("fill", "white")
   }).mousedown(function(){
-    //this.paper.editor.action = "rotate"
+    this.paper.editor.action = action;
   })
 }
 
@@ -114,6 +121,7 @@ VectorEditor.prototype.trackerCircle = function(x, y){
 }
 
 
+
 VectorEditor.prototype.showTracker = function(shape){
   var box = shape.getBBox();
   var tracker = this.draw.set();
@@ -123,11 +131,20 @@ VectorEditor.prototype.showTracker = function(shape){
   tracker.lastx = 0 //if zero then easier
   tracker.lasty = 0 //if zero then easier
   
+  tracker.push(this.draw.ellipse(box.width/2, box.height/2, 7, 7).attr({
+        "stroke": "gray",
+        "stroke-opacity": 0.5,
+        "fill": "gray",
+        "fill-opacity": 0.15
+      }).mousedown(function(){
+        this.paper.editor.action = "move"
+      }));
+  
   //draw everything relative to origin (0,0) because it gets transformed later
   if(shape.subtype == "line"){
     var line = Raphael.parsePathString(shape.attr('path'));
-    tracker.push(this.trackerBox(0,0))
-    tracker.push(this.trackerBox(line[1][1]-line[0][1],line[1][2]-line[0][2]))
+    tracker.push(this.trackerBox(0,0,"path0"))
+    tracker.push(this.trackerBox(line[1][1]-line[0][1],line[1][2]-line[0][2],"path1"))
     this.trackers.push(tracker)
   }else if(shape.type == "rect" || shape.type == "image"){
     tracker.push(this.draw.rect(-10, -10, box.width + 20, box.height + 20).attr({"opacity":0.3}))
