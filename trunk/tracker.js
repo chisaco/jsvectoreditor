@@ -143,8 +143,9 @@ VectorEditor.prototype.showTracker = function(shape){
   //draw everything relative to origin (0,0) because it gets transformed later
   if(shape.subtype == "line"){
     var line = Raphael.parsePathString(shape.attr('path'));
-    tracker.push(this.trackerBox(0,0,"path0"))
-    tracker.push(this.trackerBox(line[1][1]-line[0][1],line[1][2]-line[0][2],"path1"))
+    
+    tracker.push(this.trackerBox(line[0][1]-box.x,line[0][2]-box.y,"path0"))
+    tracker.push(this.trackerBox(line[1][1]-box.x,line[1][2]-box.y,"path1"))
     this.trackers.push(tracker)
   }else if(shape.type == "rect" || shape.type == "image"){
     tracker.push(this.draw.rect(-10, -10, box.width + 20, box.height + 20).attr({"opacity":0.3}))
