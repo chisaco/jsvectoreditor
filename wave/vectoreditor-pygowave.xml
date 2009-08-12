@@ -179,6 +179,18 @@
     wave_set("locked:"+name, null); //delete
   }
   
+  function sendUpdates(){
+    for(var i = 0; i < editor.shapes.length; i++){
+      if(index_of(editor.shapes[i].id, keys) == -1){
+        //new local shape
+        console.log("new local:",keys[i])
+        wave_set("data:"+editor.shapes[i].id,JSON.stringify(dumpshape(editor.shapes[i])))
+      }else{
+        //remove shape
+      }
+    }
+  }
+  
   function stateChanged(){
     var keys = get_subkeys("data:");
     
@@ -188,21 +200,11 @@
         loadShape(JSON.parse(wave_get("data:"+keys[i])))
         console.log("newshape:",keys[i])
       }else{
-        //if old shape
-        console.log("oldshape:",keys[i])
-      }
-    }
-    
-    
-    for(var i = 0; i < editor.shapes.length; i++){
-      if(index_of(editor.shapes[i].id, keys) == -1){
-        //new local shape
-        console.log("new local:",keys[i])
-        wave_set("data:"+editor.shapes[i].id,JSON.stringify(dumpshape(editor.shapes[i])))
-      }else{
         
+        console.log("gone shape:",keys[i])
       }
     }
+    
   }
   
   //stolen from an unreleased version of the ajax animator
@@ -266,6 +268,12 @@ dumpshape = function(shape){
 
     $(window).resize(function(){
       editor.draw.setSize($(window).width(),$(window).height())
+    })
+    
+    editor.on("mouseup", function(event){
+      setTimeout(function(){
+        sendUpdates();
+      },100)
     })
     
     editor.on("select", function(event,shape){
