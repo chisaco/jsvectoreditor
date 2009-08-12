@@ -49,9 +49,9 @@ VectorEditor.prototype.generateUUID = function(){
   return "shape:"+uuid;
 }
 
-VectorEditor.prototype.getShapeById = function(id){
+VectorEditor.prototype.getShapeById = function(v){
   for(var i=this.shapes.length;i--&&this.shapes[i].id!=v;);
-  return i
+  return this.shapes[i]
 }
 
 VectorEditor.prototype.addShape = function(shape){
