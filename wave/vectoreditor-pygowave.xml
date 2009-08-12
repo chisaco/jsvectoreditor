@@ -29,6 +29,7 @@
     <button onclick="editor.setMode('text')">Text</button>
     <button onclick="editor.setMode('delete')">Delete</button>
     <button onclick="alert(editor.getMarkup())">Markup</button>
+    <button onclick="resetGadget()">Reset</button>
     <br>
 
     <span>Fill:</span> 
