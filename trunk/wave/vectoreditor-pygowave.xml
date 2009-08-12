@@ -236,6 +236,12 @@ dumpshape = function(shape){
 }
   
   function init(){
+    if(wave && wave.isInWaveContainer()){
+      wave.setStateCallback(stateChanged)
+    }else{
+      return alert("It's only a wave gadget if it's in wave...")
+    }
+    $(document).ready(function(){
     editor = new VectorEditor(document.getElementById("canvas"), $(window).width(),$(window).height());
     editor.draw.rect(100,100,480,272).attr("stroke-width", 0).attr("fill", "white")
 
@@ -258,11 +264,9 @@ dumpshape = function(shape){
       unlock_shape(shape.id);
     })
     
-    if(wave && wave.isInWaveContainer()){
-      wave.setStateCallback(stateChanged)
-    }
+
     
-    
+    })
   }
   gadgets.util.registerOnLoadHandler(init);
   
