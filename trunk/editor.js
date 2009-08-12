@@ -113,7 +113,9 @@ VectorEditor.prototype.on = function(event, callback){
 VectorEditor.prototype.fire = function(event){
   if(this.listeners[event]){
     for(var i = 0; i < this.listeners[event].length; i++){
-      this.listeners[event][i].apply(this, arguments)
+      if(this.listeners[event][i].apply(this, arguments)===false){
+        return false;
+      }
     }
   }
 }
