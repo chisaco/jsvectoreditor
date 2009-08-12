@@ -104,7 +104,8 @@ VectorEditor.prototype.on = function(event, callback){
   if(!this.listeners[event]){
     this.listeners[event] = []
   }
-  if(this.in_array(callback,this.listeners[event]) == -1){
+  
+  if(this.in_array(callback,this.listeners[event])  ==  -1){
     this.listeners[event].push(callback);
   }
 }
