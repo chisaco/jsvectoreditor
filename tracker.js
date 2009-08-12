@@ -186,6 +186,16 @@ VectorEditor.prototype.showTracker = function(shape){
 VectorEditor.prototype.showGroupTracker = function(shape){
   var tracker = this.draw.set();
   var box = shape.getBBox();
+  
+  tracker.push(this.markTracker(this.draw.ellipse(box.width/2, box.height/2, 7, 7).attr({
+      "stroke": "gray",
+      "stroke-opacity": 0.5,
+      "fill": "gray",
+      "fill-opacity": 0.15
+    })).mousedown(function(){
+      this.paper.editor.action = "move"
+    }));
+  
   tracker.push(this.draw.rect(-5, -5, box.width + 10, box.height + 10).attr({
     "stroke-dasharray": "-",
     "stroke": "blue"
