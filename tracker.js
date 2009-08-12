@@ -1,5 +1,5 @@
 VectorEditor.prototype.unselect = function(shape){
-  this.fire("unselect")
+  this.fire("unselect", shape)
   if(!shape){
     this.selected = [];
     this.removeTracker();
@@ -16,7 +16,8 @@ VectorEditor.prototype.unselect = function(shape){
 
 VectorEditor.prototype.selectAdd = function(shape){
   if(this.is_selected(shape) == false){
-    this.fire("selectadd",shape)
+    if(this.fire("selectadd",shape)===false)return;
+    
     this.selected.push(shape)
     this.showGroupTracker(shape);
   }
@@ -31,7 +32,7 @@ VectorEditor.prototype.selectToggle = function(shape){
 }
 
 VectorEditor.prototype.select = function(shape){
-  this.fire("select",shape)
+  if(this.fire("select",shape)===false)return;
   this.unselect()
   this.selected = [shape]
   this.showTracker(shape)
@@ -126,6 +127,10 @@ VectorEditor.prototype.trackerCircle = function(x, y){
   return shape;
 }
 
+VectorEditor.prototype.markTracker = function(shape){
+  shape.node.is_tracker = true;
+  return shape;
+}
 
 
 VectorEditor.prototype.showTracker = function(shape){
@@ -137,12 +142,12 @@ VectorEditor.prototype.showTracker = function(shape){
   tracker.lastx = 0 //if zero then easier
   tracker.lasty = 0 //if zero then easier
   
-  tracker.push(this.draw.ellipse(box.width/2, box.height/2, 7, 7).attr({
+  tracker.push(this.markTracker(this.draw.ellipse(box.width/2, box.height/2, 7, 7).attr({
         "stroke": "gray",
         "stroke-opacity": 0.5,
         "fill": "gray",
         "fill-opacity": 0.15
-      }).mousedown(function(){
+      })).mousedown(function(){
         this.paper.editor.action = "move"
       }));
   
