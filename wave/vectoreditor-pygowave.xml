@@ -186,9 +186,10 @@
       if(index_of(keys[i], editor.shapes) == -1){
         //if new shape
         loadShape(JSON.parse(wave_get("data:"+keys[i])))
-        
+        console.log("newshape:",keys[i])
       }else{
         //if old shape
+        console.log("oldshape:",keys[i])
       }
     }
     
@@ -196,6 +197,7 @@
     for(var i = 0; i < editor.shapes.length; i++){
       if(index_of(editor.shapes[i].id, keys) == -1){
         //new local shape
+        console.log("new local:",keys[i])
         wave_set("data:"+editor.shapes[i].id,JSON.stringify(dumpshape(editor.shapes[i])))
       }else{
         
