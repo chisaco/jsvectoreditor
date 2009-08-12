@@ -55,13 +55,13 @@ VectorEditor.prototype.getShapeById = function(v){
 }
 
 VectorEditor.prototype.addShape = function(shape,no_select){
-  this.fire("addshape",shape)
+  this.fire("addshape",shape,no_select)
   shape.node.shape_object = shape
   if(!no_select){
     this.selected = [shape]
   }
   this.shapes.push(shape)
-  this.fire("addedshape",shape);
+  this.fire("addedshape",shape,no_select);
 }
 
 VectorEditor.prototype.rectsIntersect = function(r1, r2) {
