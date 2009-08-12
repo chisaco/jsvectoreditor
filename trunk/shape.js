@@ -54,11 +54,14 @@ VectorEditor.prototype.getShapeById = function(v){
   return this.shapes[i]
 }
 
-VectorEditor.prototype.addShape = function(shape){
+VectorEditor.prototype.addShape = function(shape,no_select){
   this.fire("addshape",shape)
   shape.node.shape_object = shape
-  this.selected = [shape]
+  if(!no_select){
+    this.selected = [shape]
+  }
   this.shapes.push(shape)
+  this.fire("addedshape",shape);
 }
 
 VectorEditor.prototype.rectsIntersect = function(r1, r2) {
