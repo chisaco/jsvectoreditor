@@ -1,9 +1,11 @@
 VectorEditor.prototype.unselect = function(shape){
-  this.fire("unselect", shape)
+
   if(!shape){
+    this.fire("unselect", this.selected[0])
     this.selected = [];
     this.removeTracker();
   }else{
+    this.fire("unselect", shape);
     this.array_remove(shape, this.selected);
     for(var i = 0; i < this.trackers.length; i++){
       if(this.trackers[i].shape == shape){
