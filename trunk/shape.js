@@ -5,7 +5,8 @@ VectorEditor.prototype.deleteSelection = function(){
 }
 
 VectorEditor.prototype.deleteShape = function(shape){
-  this.fire("delete",shape)
+  if(this.fire("delete",shape)===false)return;
+
   if(shape && shape.node && shape.node.parentNode){
     shape.remove()
   }
