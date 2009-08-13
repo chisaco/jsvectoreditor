@@ -77,10 +77,23 @@ VectorEditor.prototype.drawGrid = function(){
 }
 
 VectorEditor.prototype.move = function(shape, x, y){
-  shape.translate(x,y)
+  //HACKITY HACK HACK
+  var rot = null;
   if(shape._ && shape._.rt){
-    shape.rotate(shape._.rt.deg, true)
+    rot = shape._.rt.deg
   }
+  
+  //<here's the part that isn't a hack>
+  shape.translate(x,y)
+  //</end non-hack>
+  
+  //HACKITY HACK HACK
+  if(rot){
+    shape.rotate(rot,true)//absolutelyness
+  }
+  //if(shape._ && shape._.rt){
+  //  shape.rotate(shape._.rt.deg, true)
+  //}
 }
 
 

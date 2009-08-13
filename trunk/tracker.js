@@ -75,10 +75,7 @@ VectorEditor.prototype.updateTracker = function(tracker){
       tracker[2].attr({x: pathsplit[1][1]-2, y: pathsplit[1][2]-2})
       return;
     }
-    //now here for the magic
-    if(shape._ && shape._.rt){
-      tracker.rotate(shape._.rt.deg, (box.x + box.width/2), (box.y + box.height/2))
-    }
+
     //i wish my code could be as dated as possible by referencing pieces of culture
     //though I *hope* nobody needs to use svg/vml whatever in the near future
     //there coudl be a lot of better things
@@ -88,6 +85,12 @@ VectorEditor.prototype.updateTracker = function(tracker){
     //and am I ever gonna read this? If it's someone that's not me that's reading this
     //please tell me (if year > 2010 or otherwise)
     tracker.translate(box.x - tracker.lastx, box.y - tracker.lasty)
+    
+    //now here for the magic
+    if(shape._ && shape._.rt){
+      tracker.rotate(shape._.rt.deg, (box.x + box.width/2), (box.y + box.height/2))
+    }
+    
     tracker.lastx = box.x//y = boxxy trollin!
     tracker.lasty = box.y
   }
@@ -98,10 +101,11 @@ VectorEditor.prototype.trackerBox = function(x, y, action){
     "stroke-width": 1,
     "stroke": "green",
     "fill": "white"
-  }).mouseover(function(){
-    this.attr("fill", "red")
-  }).mouseout(function(){
-    this.attr("fill", "white")
+  //THE FOLLOWING LINES HAVE BEEN COMMENTED DUE TO A HORRIBLE BUG IN RAPHAEL
+  //}).mouseover(function(){
+  //  this.attr("fill", "red")
+  //}).mouseout(function(){
+  //  this.attr("fill", "white")
   }).mousedown(function(){
     this.paper.editor.action = action;
   })
@@ -115,10 +119,11 @@ VectorEditor.prototype.trackerCircle = function(x, y){
     "stroke-width": 1,
     "stroke": "green",
     "fill": "white"
-  }).mouseover(function(){
-    this.attr("fill", "red")
-  }).mouseout(function(){
-    this.attr("fill", "white")
+  //THE FOLLOWING LINES HAVE BEEN COMMENTED DUE TO A HORRIBLE BUG IN RAPHAEL
+  //}).mouseover(function(){
+  //  this.attr("fill", "red")
+  //}).mouseout(function(){
+  //  this.attr("fill", "white")
   }).mousedown(function(){
     this.paper.editor.action = "rotate";
   }).dblclick(function(){

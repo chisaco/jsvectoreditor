@@ -1,11 +1,3 @@
-function bind(fn, scope){
-  return function(){return fn.apply(scope, array(arguments))}
-}
-
-function array(a){
-  for(var b=a.length,c=[];b--;)c.push(a[b]);
-  return c;
-}
 
 function VectorEditor(elem, width, height){
     if (typeof(Raphael) != "function") { //check for the renderer
@@ -48,6 +40,9 @@ function VectorEditor(elem, width, height){
     
     var draw = this.draw;
     
+    
+    //THE FOLLOWING LINES ARE MOSTLY POINTLESS!
+    
     function offset(){
       //technically, vX.pos works too and I should probably use whatever I built here, but I have jQuery instead.
       if(window.Ext)return Ext.get(elem).getXY();
@@ -62,7 +57,15 @@ function VectorEditor(elem, width, height){
       return [0,0]
     }
     
-    
+    function bind(fn, scope){
+      return function(){return fn.apply(scope, array(arguments))}
+    }
+
+    function array(a){
+      for(var b=a.length,c=[];b--;)c.push(a[b]);
+      return c;
+    }
+
     $(elem).mousedown(bind(function(event){
       event.preventDefault()
       this.onMouseDown(event.clientX - offset()[0], event.clientY - offset()[1], event.target)
@@ -221,6 +224,9 @@ VectorEditor.prototype.onMouseDown = function(x, y, target){
       shape.subtype = "polygon"
     }else if(this.mode == "image"){
       shape = this.draw.image(this.prop.src, x, y, 0, 0);
+      
+      //WARNING NEXT IS A HACK!!!!!!
+      shape.attr("src",this.prop.src); //raphael won't return src correctly otherwise
     }else if(this.mode == "text"){
       shape = this.draw.text(x, y, this.prop['text']).attr('font-size',0)
     }
