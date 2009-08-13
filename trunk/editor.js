@@ -228,7 +228,7 @@ VectorEditor.prototype.onMouseDown = function(x, y, target){
       //WARNING NEXT IS A HACK!!!!!!
       shape.attr("src",this.prop.src); //raphael won't return src correctly otherwise
     }else if(this.mode == "text"){
-      shape = this.draw.text(x, y, this.prop['text']).attr('font-size',0.1)
+      shape = this.draw.text(x, y, this.prop['text']).attr('font-size',0)
       //WARNING NEXT IS A HACK!!!!!!
       shape.attr("text",this.prop.text); //raphael won't return src correctly otherwise
     }
