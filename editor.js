@@ -181,7 +181,9 @@ VectorEditor.prototype.onMouseDown = function(x, y, target){
     }else{
       return;
     }
-    if(this.selected.length > 1 || this.selectadd){
+    
+    
+    if(this.selectadd){
       this.selectAdd(shape_object);
       this.action = "move";
     }else{
@@ -352,13 +354,12 @@ VectorEditor.prototype.onMouseUp = function(x, y, target){
           new_selected.push(this.shapes[i])
         }
       }
-      if(this.selectadd == false){
-        this.unselect();
+      
+      if(new_selected.length == 0 || this.selectadd == false){
+        this.unselect()
       }
       
-      if(new_selected.length == 0){
-        this.unselect()
-      }if(new_selected.length == 1 && this.selectadd == false){
+      if(new_selected.length == 1 && this.selectadd == false){
         this.select(new_selected[0])
       }else{
         for(var i = 0; i < new_selected.length; i++){
