@@ -352,6 +352,9 @@ VectorEditor.prototype.onMouseUp = function(x, y, target){
           new_selected.push(this.shapes[i])
         }
       }
+      if(this.selectadd == false){
+        this.unselect();
+      }
       
       if(new_selected.length == 0){
         this.unselect()
