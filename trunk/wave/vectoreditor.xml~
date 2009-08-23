@@ -6,6 +6,11 @@
   </ModulePrefs>
   <Content type="html">
     <![CDATA[     
+    <style>
+      body {
+      border: 1px solid #DFE8F6;
+      }
+    </style>
        <script src="http://antimatter15.com/misc/wave/json2.js"></script>
        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
         <script type="text/javascript" src="http://jsvectoreditor.googlecode.com/svn/trunk/raphael.js"></script>
@@ -28,6 +33,17 @@
     <button onclick="editor.setMode('delete')">Delete</button>
     <button onclick="alert(editor.getMarkup())">Markup</button>
     <button onclick="resetGadget()">Reset</button>
+    
+    <img src="http://ajaxanimator.googlecode.com/svn/trunk/ajaxanimator/img/icon/select.gif">
+    <img src="http://ajaxanimator.googlecode.com/svn/trunk/ajaxanimator/img/icon/selectadd.gif">
+    <img src="http://ajaxanimator.googlecode.com/svn/trunk/ajaxanimator/img/icon/rect.gif">
+    <img src="http://ajaxanimator.googlecode.com/svn/trunk/ajaxanimator/img/icon/line.gif">
+    <img src="http://ajaxanimator.googlecode.com/svn/trunk/ajaxanimator/img/icon/ellipse.gif">
+    <img src="http://ajaxanimator.googlecode.com/svn/trunk/ajaxanimator/img/icon/path.gif">
+    <img src="http://ajaxanimator.googlecode.com/svn/trunk/ajaxanimator/img/icon/polygon.gif">
+    <img src="http://ajaxanimator.googlecode.com/svn/trunk/ajaxanimator/img/icon/image.gif">
+    <img src="http://ajaxanimator.googlecode.com/svn/trunk/ajaxanimator/img/icon/text.gif">
+    <img src="http://ajaxanimator.googlecode.com/svn/trunk/ajaxanimator/img/icon/delete.gif">
     <br>
 
     <span>Fill:</span> 
@@ -42,7 +58,7 @@
       <option style="background-color:gray;" value="gray"></option> 
       <option style="background-color:lime;" value="lime"></option> 
       <option style="background-color:maroon;" value="maroon"></option> 
-      
+      <option style="background-color:wheat;" value="wheat"></option> 
       <option style="background-color:blue;" value="blue"></option> 
       <option style="background-color:green;" value="green"></option> 
       <option style="background-color:yellow;" value="yellow"></option> 
@@ -74,7 +90,7 @@
       <option style="background-color:gray;" value="gray"></option> 
       <option style="background-color:lime;" value="lime"></option> 
       <option style="background-color:maroon;" value="maroon"></option> 
-      
+      <option style="background-color:wheat;" value="wheat"></option> 
       <option style="background-color:blue;" value="blue"></option> 
       <option style="background-color:green;" value="green"></option> 
       <option style="background-color:yellow;" value="yellow"></option> 
