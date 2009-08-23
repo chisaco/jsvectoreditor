@@ -34,6 +34,8 @@
     <button onclick="alert(editor.getMarkup())">Markup</button>
     <button onclick="resetGadget()">Reset</button>
     
+    <!--yeh! i'm steelin frum teh ajax animator -->
+    
     <img src="http://ajaxanimator.googlecode.com/svn/trunk/ajaxanimator/img/icon/select.gif">
     <img src="http://ajaxanimator.googlecode.com/svn/trunk/ajaxanimator/img/icon/selectadd.gif">
     <img src="http://ajaxanimator.googlecode.com/svn/trunk/ajaxanimator/img/icon/rect.gif">
@@ -44,6 +46,7 @@
     <img src="http://ajaxanimator.googlecode.com/svn/trunk/ajaxanimator/img/icon/image.gif">
     <img src="http://ajaxanimator.googlecode.com/svn/trunk/ajaxanimator/img/icon/text.gif">
     <img src="http://ajaxanimator.googlecode.com/svn/trunk/ajaxanimator/img/icon/delete.gif">
+    <img src="http://ajaxanimator.googlecode.com/svn/trunk/ajaxanimator/img/icon/reset.gif">
     <br>
 
     <span>Fill:</span> 
