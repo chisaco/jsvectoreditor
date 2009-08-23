@@ -13,7 +13,7 @@
         <script type="text/javascript" src="http://jsvectoreditor.googlecode.com/svn/trunk/shape.js"></script>
         <script type="text/javascript" src="http://jsvectoreditor.googlecode.com/svn/trunk/tracker.js"></script>
        
-         <div id="canvas" style="background-color: #d3d3d3; position: absolute;top:0;left:0; width: 100%; height: 100%; top: 0px; left: 0px"></div>
+         <div id="canvas" style="position: absolute;top:0;left:0; width: 100%; height: 100%; top: 0px; left: 0px"></div>
 
   <div style="position: absolute; top: 10px; left: 10px;">
     <button onclick="editor.setMode('select')">Select</button>
@@ -60,6 +60,7 @@
       <option value=".30">30%</option> 
       <option value=".20">20%</option>
       <option value=".10">10%</option>  
+      <option value="0">0%</option>  
     </select> 
     <span>Stroke:</span> 
     <select id="strokecolor" onchange="setStrokeColor(this);" style="background-color:black"> 
@@ -91,6 +92,8 @@
       <option value="8px">8px</option> 
       <option value="9px">9px</option> 
       <option value="10px">10px</option>
+      <option value="20px">20px</option>
+      <option value="40px">40px</option>
     </select> 
     
     <select id="strokeopacity" onchange="setStrokeOpacity(this);"> 
@@ -104,6 +107,7 @@
       <option value=".30">30%</option> 
       <option value=".20">20%</option>
       <option value=".10">10%</option>  
+      <option value="0">0%</option>  
     </select>
   </div>
   <script type="text/javascript">
