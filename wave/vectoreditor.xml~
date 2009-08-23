@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Module>
+  <ModulePrefs title="VectorEditor">
+    <Require feature="wave-preview" />
+
+  </ModulePrefs>
+  <Content type="html">
+    <![CDATA[     
+       <script src="http://antimatter15.com/misc/wave/json2.js"></script>
+       <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+        <script type="text/javascript" src="http://jsvectoreditor.googlecode.com/svn/trunk/raphael.js"></script>
+        <script type="text/javascript" src="http://jsvectoreditor.googlecode.com/svn/trunk/editor.js"></script>
+        <script type="text/javascript" src="http://jsvectoreditor.googlecode.com/svn/trunk/shape.js"></script>
+        <script type="text/javascript" src="http://jsvectoreditor.googlecode.com/svn/trunk/tracker.js"></script>
+       
+         <div id="canvas" style="background-color: #d3d3d3; position: absolute;top:0;left:0; width: 100%; height: 100%; top: 0px; left: 0px"></div>
+
+  <div style="position: absolute; top: 10px; left: 10px;">
+    <button onclick="editor.setMode('select')">Select</button>
+    <button onclick="editor.setMode('select+')">Select+</button>
+    <button onclick="editor.setMode('rect')">Rect</button>
+    <button onclick="editor.setMode('line')">Line</button>
+    <button onclick="editor.setMode('ellipse')">Ellipse</button>
+    <button onclick="editor.setMode('path')">Path</button>
+    <button onclick="editor.setMode('polygon')">Polygon</button>
+    <button onclick="editor.setMode('image')">Image</button>
+    <button onclick="editor.setMode('text')">Text</button>
+    <button onclick="editor.setMode('delete')">Delete</button>
+    <button onclick="alert(editor.getMarkup())">Markup</button>
+    <button onclick="resetGadget()">Reset</button>
+    <br>
+
+    <span>Fill:</span> 
+    <select id="fillcolor" onchange="setFillColor(this);" style="background-color:red"> 
+      <option style="background-color:red;" value="red"></option> 
+      
+      <option style="background-color:black;" value="black"></option> 
+      <option style="background-color:navy;" value="navy"></option> 
+      <option style="background-color:fuchsia;" value="fuchsia"></option> 
+      <option style="background-color:red;" value="lime"></option> 
+      <option style="background-color:purple;" value="purple"></option> 
+      <option style="background-color:gray;" value="gray"></option> 
+      <option style="background-color:lime;" value="lime"></option> 
+      <option style="background-color:maroon;" value="maroon"></option> 
+      
+      <option style="background-color:blue;" value="blue"></option> 
+      <option style="background-color:green;" value="green"></option> 
+      <option style="background-color:yellow;" value="yellow"></option> 
+      <option style="background-color:aqua;" value="aqua"></option> 
+      <option style="background-color:white;" value="white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option> 
+    </select> 
+    <select id="fillopacity" onchange="setFillOpacity(this);"> 
+      <option value="1">100%</option> 
+      <option value=".90">90%</option> 
+      <option value=".80">80%</option> 
+      <option value=".70">70%</option> 
+      <option value=".60">60%</option> 
+      <option value=".50">50%</option> 
+      <option value=".40">40%</option> 
+      <option value=".30">30%</option> 
+      <option value=".20">20%</option>
+      <option value=".10">10%</option>  
+    </select> 
+    <span>Stroke:</span> 
+    <select id="strokecolor" onchange="setStrokeColor(this);" style="background-color:black"> 
+      <option style="background-color:black;" value="black"></option> 
+      <option style="background-color:red;" value="red"></option> 
+      <option style="background-color:blue;" value="blue"></option> 
+      <option style="background-color:turquoise;" value="turquoise"></option> 
+      <option style="background-color:green;" value="green"></option> 
+      <option style="background-color:yellow;" value="yellow"></option> 
+      <option style="background-color:aqua;" value="aqua"></option> 
+      <option style="background-color:white;" value="white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option> 
+    </select> 
+    <select id="strokewidth" onchange="setStrokeWidth(this);"> 
+      <option value="1px">1px</option> 
+      <option value="2px">2px</option> 
+      <option value="3px">3px</option> 
+      <option value="4px">4px</option> 
+      <option value="5px">5px</option> 
+      <option value="6px">6px</option>
+      <option value="7px">7px</option> 
+      <option value="8px">8px</option> 
+      <option value="9px">9px</option> 
+      <option value="10px">10px</option>
+    </select> 
+    
+    <select id="strokeopacity" onchange="setStrokeOpacity(this);"> 
+      <option value="1">100%</option> 
+      <option value=".90">90%</option> 
+      <option value=".80">80%</option> 
+      <option value=".70">70%</option> 
+      <option value=".60">60%</option> 
+      <option value=".50">50%</option> 
+      <option value=".40">40%</option> 
+      <option value=".30">30%</option> 
+      <option value=".20">20%</option>
+      <option value=".10">10%</option>  
+    </select>
+  </div>
+  <script type="text/javascript">
+
+    
+  function setFillColor(colors) {
+    var color = colors.options[colors.selectedIndex].value;
+    colors.style.backgroundColor = color;
+    
+    editor.set("fill", color)
+  }
+  
+  function setStrokeColor(colors) {
+    var color = colors.options[colors.selectedIndex].value;
+    colors.style.backgroundColor = color;
+    editor.set("stroke", color)
+  }
+  
+  function setStrokeWidth(widths) {
+    var width = widths.options[widths.selectedIndex].value;
+    editor.set("stroke-width",parseInt(width))
+  }
+
+  function setStrokeOpacity(widths) {
+    var width = widths.options[widths.selectedIndex].value;
+    editor.set("stroke-opacity",parseFloat(width))
+  }
+  
+  function setFillOpacity(widths) {
+    var width = widths.options[widths.selectedIndex].value;
+    editor.set("fill-opacity",parseFloat(width))
+  }
+
+  function getOptionByValue(select, value)
+  {
+    for (var i=0; i<select.length; i++) {
+      if (select.options[i].value == value) {
+        return i;
+      }
+    }
+    return -1;
+  }
+
+  </script>
+ <script type="text/javascript" src="http://antimatter15.com/misc/wave/vectoreditor.js"></script>
+
+    ]]>
+  </Content>
+</Module>
