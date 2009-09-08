@@ -4,6 +4,9 @@ VectorEditor.prototype.unselect = function(shape){
     while(this.selected[0]){
       this.unselect(this.selected[0])
     }
+    if(shape !== false){
+      this.fire("unselected")
+    }
   }else{
     this.fire("unselect", shape);
     this.array_remove(shape, this.selected);
@@ -35,7 +38,7 @@ VectorEditor.prototype.selectToggle = function(shape){
 
 VectorEditor.prototype.select = function(shape){
   if(this.fire("select",shape)===false)return;
-  this.unselect()
+  this.unselect(false)
   this.selected = [shape]
   this.showTracker(shape)
 }
@@ -70,9 +73,11 @@ VectorEditor.prototype.updateTracker = function(tracker){
     //this is somewhat hackish, if someone finds a better way to do it...
     if(shape.type == "path" && this.action.substr(0,4) == "path"){
       var pathsplit = Raphael.parsePathString(shape.attr("path"))
-      tracker[0].attr({cx: box.x + box.width/2, cy: box.y + box.height/2})
-      tracker[1].attr({x: pathsplit[0][1]-2, y: pathsplit[0][2]-2})
-      tracker[2].attr({x: pathsplit[1][1]-2, y: pathsplit[1][2]-2})
+      if(pathsplit.length == 2){
+        tracker[0].attr({cx: box.x + box.width/2, cy: box.y + box.height/2})
+        tracker[1].attr({x: pathsplit[0][1]-2, y: pathsplit[0][2]-2})
+        tracker[2].attr({x: pathsplit[1][1]-2, y: pathsplit[1][2]-2})
+      }
       return;
     }
 

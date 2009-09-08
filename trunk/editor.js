@@ -23,7 +23,7 @@ function VectorEditor(elem, width, height){
       "fill-opacity": 1,
       "text": "elitist"
     }
-    
+       
     this.mode = "select";
     this.selectbox = null;
     this.selected = []
@@ -65,8 +65,25 @@ function VectorEditor(elem, width, height){
       for(var b=a.length,c=[];b--;)c.push(a[b]);
       return c;
     }
-
-    $(elem).mousedown(bind(function(event){
+    /*
+    Ext.get(elem).on("mousedown",function(event){
+      event.preventDefault()
+      this.onMouseDown(event.getPageX() - offset()[0], event.getPageY() - offset()[1], event.getTarget())
+    }, this);
+    Ext.get(elem).on("mousemove",function(event){
+      event.preventDefault()
+      this.onMouseMove(event.getPageX()  - offset()[0], event.getPageY()- offset()[1], event.getTarget())
+    }, this)
+    Ext.get(elem).on("mouseup",function(event){
+      event.preventDefault()
+      this.onMouseUp(event.getPageX() - offset()[0], event.getPageY() - offset()[1], event.getTarget())
+    }, this)
+    Ext.get(elem).on("dblclick",function(event){
+      event.preventDefault()
+      this.onDblClick(event.getPageX() - offset()[0], event.getPageY()- offset()[1], event.getTarget())
+    }, this)
+    */
+        $(elem).mousedown(bind(function(event){
       event.preventDefault()
       this.onMouseDown(event.clientX - offset()[0], event.clientY - offset()[1], event.target)
     }, this));
@@ -179,15 +196,17 @@ VectorEditor.prototype.onMouseDown = function(x, y, target){
               "stroke": "#007fff"});
       return; 
     }else{
-      return;
+      return; //die trackers die!
     }
     
     
     if(this.selectadd){
       this.selectAdd(shape_object);
       this.action = "move";
-    }else{
+    }else if(!this.is_selected(shape_object)){
       this.select(shape_object);
+      this.action = "move";
+    }else{
       this.action = "move";
     }
     this.offsetXY = [shape_object.attr("x") - x,shape_object.attr("y") - y]
@@ -217,22 +236,23 @@ VectorEditor.prototype.onMouseDown = function(x, y, target){
     }else if(this.mode == "ellipse"){
       shape = this.draw.ellipse(x, y, 0, 0);
     }else if(this.mode == "path"){
-      shape = this.draw.path({}).moveTo(x, y)
+      shape = this.draw.path("M{0},{1}",x,y)
     }else if(this.mode == "line"){
-      shape = this.draw.path({}).moveTo(x, y)
+      shape = this.draw.path("M{0},{1}",x,y)
       shape.subtype = "line"
     }else if(this.mode == "polygon"){
-      shape = this.draw.path({}).moveTo(x, y)
+      shape = this.draw.path("M{0},{1}",x,y)
       shape.subtype = "polygon"
     }else if(this.mode == "image"){
       shape = this.draw.image(this.prop.src, x, y, 0, 0);
       
       //WARNING NEXT IS A HACK!!!!!!
-      shape.attr("src",this.prop.src); //raphael won't return src correctly otherwise
+      //shape.attr("src",this.prop.src); //raphael won't return src correctly otherwise
     }else if(this.mode == "text"){
       shape = this.draw.text(x, y, this.prop['text']).attr('font-size',0)
+      shape.text = this.prop['text'];
       //WARNING NEXT IS A HACK!!!!!!
-      shape.attr("text",this.prop.text); //raphael won't return src correctly otherwise
+      //shape.attr("text",this.prop.text); //raphael won't return src correctly otherwise
     }
     if(shape){
       shape.id = this.generateUUID();
@@ -309,7 +329,12 @@ VectorEditor.prototype.onMouseMove = function(x, y, target){
         //var hack = pathsplit.reverse().slice(3).reverse().join(" ")+' ';
         
         //console.log(pathsplit)
-        pathsplit.splice(pathsplit.length - 1, 1);
+        if(this.mode == "line"){
+          //safety measure, the next should work, but in practice, no
+          pathsplit.splice(1)
+        }else{
+          pathsplit.splice(pathsplit.length - 1, 1);
+        }
         //its such a pity that raphael has lost the ability to do it without hacks -_-
         this.selected[0].attr("path", pathsplit)
       }else{
