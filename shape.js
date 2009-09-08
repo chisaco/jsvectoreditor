@@ -4,8 +4,8 @@ VectorEditor.prototype.deleteSelection = function(){
   }
 }
 
-VectorEditor.prototype.deleteShape = function(shape){
-  if(this.fire("delete",shape)===false)return;
+VectorEditor.prototype.deleteShape = function(shape,nofire){
+  if(!nofire){if(this.fire("delete",shape)===false)return;}
 
   if(shape && shape.node && shape.node.parentNode){
     shape.remove()
@@ -38,7 +38,7 @@ VectorEditor.prototype.deleteAll = function(){
 VectorEditor.prototype.clearShapes = function(){
   this.fire("clear")
   while(this.shapes.length > 0){
-    this.deleteShape(this.shapes[0])
+    this.deleteShape(this.shapes[0],true) //nofire
   }
 }
 
@@ -55,14 +55,14 @@ VectorEditor.prototype.getShapeById = function(v){
   return this.shapes[i]
 }
 
-VectorEditor.prototype.addShape = function(shape,no_select){
-  this.fire("addshape",shape,no_select)
+VectorEditor.prototype.addShape = function(shape,no_select, no_fire){
+  if(!no_fire)this.fire("addshape",shape,no_select);
   shape.node.shape_object = shape
   if(!no_select){
     this.selected = [shape]
   }
   this.shapes.push(shape)
-  this.fire("addedshape",shape,no_select);
+  if(!no_fire)this.fire("addedshape",shape,no_select);
 }
 
 VectorEditor.prototype.rectsIntersect = function(r1, r2) {
@@ -78,19 +78,19 @@ VectorEditor.prototype.drawGrid = function(){
 
 VectorEditor.prototype.move = function(shape, x, y){
   //HACKITY HACK HACK
-  var rot = null;
-  if(shape._ && shape._.rt){
-    rot = shape._.rt.deg
-  }
+  //var rot = null;
+  //if(shape._ && shape._.rt){
+  //  rot = shape._.rt.deg
+  //}
   
   //<here's the part that isn't a hack>
   shape.translate(x,y)
   //</end non-hack>
   
   //HACKITY HACK HACK
-  if(rot){
-    shape.rotate(rot,true)//absolutelyness
-  }
+  //if(rot){
+  //  shape.rotate(rot,true)//absolutelyness
+  //}
   //if(shape._ && shape._.rt){
   //  shape.rotate(shape._.rt.deg, true)
   //}
@@ -119,6 +119,10 @@ VectorEditor.prototype.scale = function(shape, corner, x, y){
     break;
   }
   shape.scale(x, y, xp, yp)
+}
+
+VectorEditor.prototype.fixText = function(str){
+  return window.Ax?Ax.textfix(str):str;
 }
 
 VectorEditor.prototype.resize = function(object, width, height, x, y){
@@ -150,5 +154,6 @@ VectorEditor.prototype.resize = function(object, width, height, x, y){
     }
   }else if(object.type == "text"){
     object.attr("font-size", Math.abs(width))
+    //object.node.style.fontSize = null;
   }
 }
