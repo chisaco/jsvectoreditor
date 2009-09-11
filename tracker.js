@@ -111,7 +111,9 @@ VectorEditor.prototype.trackerBox = function(x, y, action){
   //  this.attr("fill", "red")
   //}).mouseout(function(){
   //  this.attr("fill", "white")
-  }).mousedown(function(){
+  }).mousedown(function(event){
+    //console.log(event)
+    
     this.paper.editor.action = action;
   })
   shape.node.is_tracker = true;
@@ -145,7 +147,17 @@ VectorEditor.prototype.markTracker = function(shape){
 }
 
 
+VectorEditor.prototype.newTracker = function(shape){
+  for(var i = 0; i < this.trackers.length; i++){
+    if(this.trackers[i].shape == shape){
+      this.removeTracker(this.trackers[i]);
+    }
+  }
+  this.showTracker(shape)
+}
+
 VectorEditor.prototype.showTracker = function(shape){
+  var rot_offset = -14;
   var box = shape.getBBox();
   var tracker = this.draw.set();
   tracker.shape = shape;
@@ -171,23 +183,30 @@ VectorEditor.prototype.showTracker = function(shape){
     tracker.push(this.trackerBox(line[1][1]-box.x,line[1][2]-box.y,"path1"))
     this.trackers.push(tracker)
   }else if(shape.type == "rect" || shape.type == "image"){
-    tracker.push(this.draw.rect(-10, -10, box.width + 20, box.height + 20).attr({"opacity":0.3}))
+    tracker.push(this.draw.rect(-6, -6, box.width + 11, box.height + 11).attr({"opacity":0.3}))
     //tracker.push(this.trackerBox(-10, -10))
     //tracker.push(this.trackerBox(box.width + 10, -10))
     //tracker.push(this.trackerBox(box.width + 10, box.height + 10))
     //tracker.push(this.trackerBox(-10, box.height + 10))
-    tracker.push(this.trackerCircle(box.width/2, -25))
+    tracker.push(this.trackerCircle(box.width/2, rot_offset))
+    tracker.push(this.trackerBox(box.width+5,box.height+5,"resize"))
     this.trackers.push(tracker)
   }else if(shape.type == "ellipse"){
     //tracker.push(this.trackerBox(box.x, box.y))
     //tracker.push(this.trackerBox(box.width, box.y))
     //tracker.push(this.trackerBox(box.width, box.height))
     //tracker.push(this.trackerBox(box.x, box.height))
-    tracker.push(this.trackerCircle(box.width/2, -25))
+    tracker.push(this.trackerCircle(box.width/2, rot_offset))
+    tracker.push(this.trackerBox(box.width+5,box.height+5,"resize"))
+    this.trackers.push(tracker)
+  }else if(shape.type == "text"){
+    tracker.push(this.draw.rect(-6, -6, box.width + 11, box.height + 11).attr({"opacity":0.3}))
+    tracker.push(this.trackerCircle(box.width/2, rot_offset))
+    tracker.push(this.trackerBox(box.width+5,box.height+5,"resize"))
     this.trackers.push(tracker)
   }else{
-    tracker.push(this.draw.rect(-10, -10, box.width + 20, box.height + 20).attr({"opacity":0.3}))
-    tracker.push(this.trackerCircle(box.width/2, -25))
+    tracker.push(this.draw.rect(-6, -6, box.width + 11, box.height + 11).attr({"opacity":0.3}))
+    tracker.push(this.trackerCircle(box.width/2, rot_offset))
     this.trackers.push(tracker)
   }
   this.updateTracker(tracker)
@@ -206,7 +225,7 @@ VectorEditor.prototype.showGroupTracker = function(shape){
       this.paper.editor.action = "move"
     }));
   
-  tracker.push(this.draw.rect(-5, -5, box.width + 10, box.height + 10).attr({
+  tracker.push(this.draw.rect(-6, -6, box.width + 11, box.height + 11).attr({
     "stroke-dasharray": "-",
     "stroke": "blue"
   }))

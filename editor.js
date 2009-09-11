@@ -130,6 +130,21 @@ VectorEditor.prototype.on = function(event, callback){
   }
 }
 
+
+VectorEditor.prototype.returnRotatedPoint = function(x,y,cx,cy,a){
+    // http://mathforum.org/library/drmath/view/63184.html
+    
+    // radius using distance formula
+    var r = Math.sqrt((x-cx)*(x-cx) + (y-cy)*(y-cy));
+    // initial angle in relation to center
+    var iA = Math.atan2((y-cy),(x-cx)) * (180/Math.PI);
+
+    var nx = r * Math.cos((a + iA)/(180/Math.PI));
+    var ny = r * Math.sin((a + iA)/(180/Math.PI));
+
+    return [cx+nx,cy+ny];
+}
+
 VectorEditor.prototype.fire = function(event){
   if(this.listeners[event]){
     for(var i = 0; i < this.listeners[event].length; i++){
@@ -290,7 +305,7 @@ VectorEditor.prototype.onMouseMove = function(x, y, target){
         //no multi-rotate
         var box = this.selected[0].getBBox()
         var rad = Math.atan2(y - (box.y + box.height/2), x - (box.x + box.width/2))
-        var deg = ((rad * (180/Math.PI))+90) % 360
+        var deg = ((((rad * (180/Math.PI))+90) % 360)+360) % 360;
         this.selected[0].rotate(deg, true); //absolute!
         //this.rotateTracker(deg, (box.x + box.width/2), (box.y + box.height/2))
         this.updateTracker();
@@ -303,6 +318,27 @@ VectorEditor.prototype.onMouseMove = function(x, y, target){
           this.selected[0].attr("path", pathsplit)
           this.updateTracker()
         }
+      }else if(this.action == "resize"){
+        if(!this.onGrabXY){ //technically a misnomer
+          this.onGrabXY = [
+            this.selected[0].attr("x"),
+            this.selected[0].attr("y")
+          ]
+        }
+        var box = this.selected[0].getBBox()
+        var nxy = this.returnRotatedPoint(x, y, box.x + box.width/2, box.y + box.height/2, -this.selected[0].attr("rotation"))
+        x = nxy[0]
+        y = nxy[1]
+        if(this.selected[0].type == "rect"){
+          this.resize(this.selected[0], x - this.onGrabXY[0], y - this.onGrabXY[1], this.onGrabXY[0], this.onGrabXY[1])
+        }else if(this.selected[0].type == "image"){
+          this.resize(this.selected[0], x - this.onGrabXY[0], y - this.onGrabXY[1], this.onGrabXY[0], this.onGrabXY[1])
+        }else if(this.selected[0].type == "ellipse"){
+          this.resize(this.selected[0], x - this.onGrabXY[0], y - this.onGrabXY[1], this.onGrabXY[0], this.onGrabXY[1])
+        }else if(this.selected[0].type == "text"){
+          this.resize(this.selected[0], x - this.onGrabXY[0], y - this.onGrabXY[1], this.onGrabXY[0], this.onGrabXY[1])
+        }
+        this.newTracker(this.selected[0])
       }
     }
   }else if(this.selected.length == 1){
@@ -370,6 +406,8 @@ VectorEditor.prototype.onDblClick = function(x, y, target){
 
 VectorEditor.prototype.onMouseUp = function(x, y, target){
   this.fire("mouseup")
+  this.onGrabXY = null;
+  
   if(this.mode == "select" || this.mode == "delete"){
     if(this.selectbox){
       var sbox = this.selectbox.getBBox()
