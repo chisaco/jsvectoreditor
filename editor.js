@@ -1,71 +1,71 @@
 
 function VectorEditor(elem, width, height){
-    if (typeof(Raphael) != "function") { //check for the renderer
-        return alert("Error! Renderer is Missing!"); //if renderer isn't there, return false;
-    }
-    
-    this.container = elem
-    this.draw = Raphael(elem, width, height);
-    
-    this.draw.editor = this;
-    
-    this.onHitXY = [0,0]
-    this.offsetXY = [0,0]
-    this.tmpXY = [0,0]
+  if (typeof(Raphael) != "function") { //check for the renderer
+      return alert("Error! Renderer is Missing!"); //if renderer isn't there, return false;
+  }
+  
+  this.container = elem
+  this.draw = Raphael(elem, width, height);
+  
+  this.draw.editor = this;
+  
+  this.onHitXY = [0,0]
+  this.offsetXY = [0,0]
+  this.tmpXY = [0,0]
 
-    //cant think of any better way to do it
-    this.prop = {
-      "src": "http://upload.wikimedia.org/wikipedia/commons/a/a5/ComplexSinInATimeAxe.gif",
-      "stroke-width": 1,
-      "stroke": "#000000",
-      "fill": "#ff0000",
-      "stroke-opacity": 1,
-      "fill-opacity": 1,
-      "text": "elitist"
+  //cant think of any better way to do it
+  this.prop = {
+    "src": "http://upload.wikimedia.org/wikipedia/commons/a/a5/ComplexSinInATimeAxe.gif",
+    "stroke-width": 1,
+    "stroke": "#000000",
+    "fill": "#ff0000",
+    "stroke-opacity": 1,
+    "fill-opacity": 1,
+    "text": "elitist"
+  }
+     
+  this.mode = "select";
+  this.selectbox = null;
+  this.selected = []
+  
+  this.action = "";
+  
+  this.selectadd = false;
+  
+  this.shapes = []
+  this.trackers = []
+  
+  this.listeners = {};
+  
+  
+  var draw = this.draw;
+  
+  
+  //THE FOLLOWING LINES ARE MOSTLY POINTLESS!
+  
+  function offset(){
+    //technically, vX.pos works too and I should probably use whatever I built here, but I have jQuery instead.
+    if(window.Ext)return Ext.get(elem).getXY();
+    if(window.jQuery){
+      var pos = jQuery(elem).offset();
+      return [pos.left, pos.top];
     }
-       
-    this.mode = "select";
-    this.selectbox = null;
-    this.selected = []
-    
-    this.action = "";
-    
-    this.selectadd = false;
-    
-    this.shapes = []
-    this.trackers = []
-    
-    this.listeners = {};
-    
-    
-    var draw = this.draw;
-    
-    
-    //THE FOLLOWING LINES ARE MOSTLY POINTLESS!
-    
-    function offset(){
-      //technically, vX.pos works too and I should probably use whatever I built here, but I have jQuery instead.
-      if(window.Ext)return Ext.get(elem).getXY();
-      if(window.jQuery){
-        var pos = jQuery(elem).offset();
-        return [pos.left, pos.top];
-      }
-      if(window.vx){ //vx support
-        var pos = vx.pos(elem);
-        return [pos.l, pos.t]
-      }
-      return [0,0]
+    if(window.vx){ //vx support
+      var pos = vx.pos(elem);
+      return [pos.l, pos.t]
     }
-    
-    function bind(fn, scope){
-      return function(){return fn.apply(scope, array(arguments))}
-    }
+    return [0,0]
+  }
+  
+  function bind(fn, scope){
+    return function(){return fn.apply(scope, array(arguments))}
+  }
 
-    function array(a){
-      for(var b=a.length,c=[];b--;)c.push(a[b]);
-      return c;
-    }
-    /*
+  function array(a){
+    for(var b=a.length,c=[];b--;)c.push(a[b]);
+    return c;
+  }
+  if(window.Ext){
     Ext.get(elem).on("mousedown",function(event){
       event.preventDefault()
       this.onMouseDown(event.getPageX() - offset()[0], event.getPageY() - offset()[1], event.getTarget())
@@ -82,8 +82,8 @@ function VectorEditor(elem, width, height){
       event.preventDefault()
       this.onDblClick(event.getPageX() - offset()[0], event.getPageY()- offset()[1], event.getTarget())
     }, this)
-    */
-        $(elem).mousedown(bind(function(event){
+  }else if(window.jQuery){
+    $(elem).mousedown(bind(function(event){
       event.preventDefault()
       this.onMouseDown(event.clientX - offset()[0], event.clientY - offset()[1], event.target)
     }, this));
@@ -99,6 +99,7 @@ function VectorEditor(elem, width, height){
       event.preventDefault()
       this.onDblClick(event.clientX - offset()[0], event.clientY - offset()[1], event.target)
     }, this));
+  }
 }
 
 VectorEditor.prototype.setMode = function(mode){
