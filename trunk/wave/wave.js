@@ -132,8 +132,9 @@
           if((new Date()).getTime() - parseInt(text.substr(4)) < 5000){
             //oh noes deleted
             editor.deleteShape(editor.getShapeById(keys[i]))
-            continue;
           }
+          
+            continue;
         }
         var json = JSON.parse(text);
         
