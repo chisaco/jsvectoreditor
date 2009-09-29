@@ -110,7 +110,7 @@
         
         //console.log("newshape:",keys[i])
         //console.log("data",text)
-        if(typeof val == "string" && text.indexOf("DEL/") == 0){
+        if(typeof text == "string" && text.indexOf("DEL/") == 0){
           if((new Date()).getTime() - parseInt(text.substr(4)) < 5000){
             //oh noes deleted
             continue;
