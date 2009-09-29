@@ -34,6 +34,7 @@
   
   function wave_set(row, value){
     var delta = {}
+    console.log(row, value)
     delta[row] = value;
     if(wave_get(row) != value){
       wave.getState().submitDelta(delta)
