@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <Module>
-  <ModulePrefs title="VectorEditor" height="480">
+  <ModulePrefs title="VectorEditor" height="640">
     <Require feature="wave" />
 
   </ModulePrefs>
