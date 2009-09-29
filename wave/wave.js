@@ -45,7 +45,7 @@
     delta[row] = value;
     var val = wave_get(row);
     if(val != value){
-      if(val.indexOf("DEL/") == 0){
+      if(typeof val == "string" && val.indexOf("DEL/") == 0){
        if((new Date()).getTime() - parseInt(val.substr(4)) < 1337){
           return; //dont change if deleted recently
        }
@@ -110,7 +110,7 @@
         
         //console.log("newshape:",keys[i])
         //console.log("data",text)
-        if(text.indexOf("DEL/") == 0){
+        if(typeof val == "string" && text.indexOf("DEL/") == 0){
           if((new Date()).getTime() - parseInt(text.substr(4)) < 5000){
             //oh noes deleted
             continue;
@@ -224,7 +224,7 @@ dumpshape = function(shape){
     if(wave && wave.isInWaveContainer()){
       //if(wave.getState()){
       
-      console.log(wave.getState())
+      //console.log(wave.getState())
         wave.setStateCallback(stateChanged)
       //}else{
       //  return alert("Failed! Wave State is MISSING! Not my fault!")
