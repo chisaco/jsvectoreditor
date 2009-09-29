@@ -68,7 +68,7 @@
     var people = wave.getParticipants()
     for(var i = 0; i < people.length; i++){
       if(people[i].getId() == state.split("!t")[0]){
-        if(parseInt(state.split("!t")[1]) < (new Date).getTime() - (1000*60)){
+        if(parseInt(state.split("!t")[1]) > (new Date).getTime() - (1000*60)){
           return state.split("!t")[0]
         }else{
           return false;
