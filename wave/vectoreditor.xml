@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <Module>
   <ModulePrefs title="VectorEditor" height="480">
-    <Require feature="wave-preview" />
+    <Require feature="wave" />
 
   </ModulePrefs>
   <Content type="html">
