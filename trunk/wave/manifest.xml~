@@ -1,6 +1,0 @@
-<extension location="Toolbar">
-   <info text="VectorEditor"
-         description="Click to insert the VectorEditor gadget."
-         imageUrl="http://jsvectoreditor.googlecode.com/svn/trunk/wave/icon.png"/>
-   <insertGadget url="http://jsvectoreditor.googlecode.com/svn/trunk/wave/vectoreditor.xml"/>
- </extension>

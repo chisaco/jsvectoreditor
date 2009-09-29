@@ -54,6 +54,15 @@
     <span>Fill:</span> 
     <select id="fillcolor" onchange="setFillColor(this);" style="background-color:red"> 
       <option style="background-color:red;" value="red"></option> 
+      <option style="background-color:black;" value="black"></option> 
+      <option style="background-color:navy;" value="navy"></option> 
+      <option style="background-color:fuchsia;" value="fuchsia"></option> 
+      <option style="background-color:red;" value="lime"></option> 
+      <option style="background-color:purple;" value="purple"></option> 
+      <option style="background-color:gray;" value="gray"></option> 
+      <option style="background-color:lime;" value="lime"></option> 
+      <option style="background-color:maroon;" value="maroon"></option> 
+      <option style="background-color:wheat;" value="wheat"></option> 
       <option style="background-color:blue;" value="blue"></option> 
       <option style="background-color:green;" value="green"></option> 
       <option style="background-color:yellow;" value="yellow"></option> 
@@ -76,6 +85,13 @@
     <select id="strokecolor" onchange="setStrokeColor(this);" style="background-color:black"> 
       <option style="background-color:black;" value="black"></option> 
       <option style="background-color:red;" value="red"></option> 
+      <option style="background-color:fuchsia;" value="fuchsia"></option> 
+      <option style="background-color:red;" value="lime"></option> 
+      <option style="background-color:purple;" value="purple"></option> 
+      <option style="background-color:gray;" value="gray"></option> 
+      <option style="background-color:lime;" value="lime"></option> 
+      <option style="background-color:maroon;" value="maroon"></option> 
+      <option style="background-color:wheat;" value="wheat"></option> 
       <option style="background-color:blue;" value="blue"></option> 
       <option style="background-color:green;" value="green"></option> 
       <option style="background-color:yellow;" value="yellow"></option> 
