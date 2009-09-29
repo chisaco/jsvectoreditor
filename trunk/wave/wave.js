@@ -207,11 +207,11 @@ dumpshape = function(shape){
     //editor.draw.rect(100,100,480,272).attr("stroke-width", 0).attr("fill", "white")
 
     if(wave && wave.isInWaveContainer()){
-      if(wave.getState()){
-            wave.setStateCallback(stateChanged)
-      }else{
-        return alert("Failed! Wave State is MISSING! Not my fault!")
-      }
+      //if(wave.getState()){
+        wave.setStateCallback(stateChanged)
+      //}else{
+      //  return alert("Failed! Wave State is MISSING! Not my fault!")
+      //}
     }else{
       return alert("It's only a wave gadget if it's in wave...")
     }
