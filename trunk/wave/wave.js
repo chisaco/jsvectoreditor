@@ -1,5 +1,12 @@
   var editor = null;
 
+
+  function setMode(mode){
+    editor.setMode(mode=='selectp'?'select+':mode);
+    $("button").attr("disabled",null);
+    $("#"+mode).attr("disabled","true");
+  }
+
   function resetGadget(){
     var keys = wave.getState().getKeys()
     var state = {}
@@ -34,7 +41,7 @@
   
   function wave_set(row, value){
     var delta = {}
-    console.log(row, value)
+    //console.log(row, value)
     delta[row] = value;
     if(wave_get(row) != value){
       wave.getState().submitDelta(delta)
@@ -194,10 +201,6 @@ dumpshape = function(shape){
       }
     }
     
-    //HACKITY HACK HACK!!!!
-    if(shape && shape._ && shape._.rt && shape._.rt.deg){
-      info['rotation'] = shape._.rt.deg
-    }
     
     return info
 }
@@ -209,6 +212,8 @@ dumpshape = function(shape){
 
     if(wave && wave.isInWaveContainer()){
       //if(wave.getState()){
+      
+      console.log(wave.getState())
         wave.setStateCallback(stateChanged)
       //}else{
       //  return alert("Failed! Wave State is MISSING! Not my fault!")
