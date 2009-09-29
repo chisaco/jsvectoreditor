@@ -111,10 +111,7 @@
         //console.log("newshape:",keys[i])
         //console.log("data",text)
         if(typeof text == "string" && text.indexOf("DEL/") == 0){
-          if((new Date()).getTime() - parseInt(text.substr(4)) < 5000){
-            //oh noes deleted
             continue;
-          }
         }
         var json = JSON.parse(text);
         
@@ -134,6 +131,7 @@
         if(typeof text == "string" && text.indexOf("DEL/") == 0){
           if((new Date()).getTime() - parseInt(text.substr(4)) < 5000){
             //oh noes deleted
+            editor.deleteShape(editor.getShapeById(keys[i]))
             continue;
           }
         }
@@ -147,11 +145,6 @@
         }
     }
     
-    for(var i = 0; i < editor.shapes.length; i++){
-      if(index_of(editor.shapes[i].id, keys) == -1){
-        editor.deleteShape(editor.shapes[i])
-      }
-    }
     
     }
     
