@@ -147,7 +147,6 @@
   //so why am i citing myself?
   
   loadShape = function(shape, noattachlistener, animate){
-    console.log(shape)
     var instance = editor//instance?instance:Ax.canvas
     if(!shape || !shape.type || !shape.id)return;
     
