@@ -43,7 +43,13 @@
     var delta = {}
     //console.log(row, value)
     delta[row] = value;
-    if(wave_get(row) != value){
+    var val = wave_get(row);
+    if(val != value){
+      if(val.indexOf("DEL/") == 0){
+       if((new Date()).getTime() - parseInt(val.substr(4)) < 1337){
+          return; //dont change if deleted recently
+       }
+     }
       wave.getState().submitDelta(delta)
     }
   }
@@ -104,7 +110,12 @@
         
         //console.log("newshape:",keys[i])
         //console.log("data",text)
-        
+        if(text.indexOf("DEL/") == 0){
+          if((new Date()).getTime() - parseInt(text.substr(4)) < 5000){
+            //oh noes deleted
+            continue;
+          }
+        }
         var json = JSON.parse(text);
         
         loadShape(json,true)
@@ -301,7 +312,7 @@ dumpshape = function(shape){
     editor.on("delete", function(event, shape){
     if(!wave.isPlayback()){
       setTimeout(function(){
-        wave_set("data:"+shape.id, null);
+        wave_set("data:"+shape.id, 'DEL/'+(new Date()).getTime());
         unlock_shape(shape.id);
       },10)
       }
