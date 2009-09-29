@@ -26,12 +26,13 @@
 
   <style>
     button {
-      width: 35px;
-      height: 35px;
+      width: 28px;
+      height: 28px;
+      margin-bottom: 5px;
     }
   </style>
 
-  <div style="position: absolute; top: 10px; left: 10px; width: 40px">
+  <div style="position: absolute; top: 10px; left: 10px; width: 64px">
   
     <button id="select" onclick="setMode('select')"><img src="http://ajaxanimator.googlecode.com/svn/trunk/ajaxanimator/img/icon/select.gif" title="Select"></button>
     <button id="selectp"onclick="setMode('selectp')"><img src="http://ajaxanimator.googlecode.com/svn/trunk/ajaxanimator/img/icon/selectadd.gif" title="Select Add"></button>
@@ -44,17 +45,10 @@
     <button id="text" onclick="setMode('text')"><img src="http://ajaxanimator.googlecode.com/svn/trunk/ajaxanimator/img/icon/text.gif" title="Text"></button>
     <button id="delete" onclick="setMode('delete')"><img src="http://ajaxanimator.googlecode.com/svn/trunk/ajaxanimator/img/icon/delete.gif" title="Delete"></button>
     <button onclick="alert(editor.getMarkup())"><img src="http://ajaxanimator.googlecode.com/svn/trunk/ajaxanimator/img/silk/script_code.png" title="Markup"></button>
+    <button onclick="editor.deleteAll()"><img src="http://ajaxanimator.googlecode.com/svn/trunk/ajaxanimator/img/silk/arrow_rotate_clockwise.png" title="Reset"></button>
     <br>
     
     
-    
-    
-    <!--
-    <img src="http://ajaxanimator.googlecode.com/svn/trunk/ajaxanimator/img/silk/arrow_rotate_clockwise.png" title="Reset">
-    <img src="http://ajaxanimator.googlecode.com/svn/trunk/ajaxanimator/img/silk/script_code.png" title="Markup">
-    -->
-
-    <br>
 
     <span>Fill:</span> 
     <select id="fillcolor" onchange="setFillColor(this);" style="background-color:red"> 
