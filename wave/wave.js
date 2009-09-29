@@ -1,12 +1,5 @@
   var editor = null;
 
-
-  function setMode(mode){
-    editor.setMode(mode=='selectp'?'select+':mode);
-    $("button").attr("disabled",null);
-    $("#"+mode).attr("disabled","true");
-  }
-
   function resetGadget(){
     var keys = wave.getState().getKeys()
     var state = {}
