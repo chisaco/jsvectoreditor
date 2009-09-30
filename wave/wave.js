@@ -4,7 +4,7 @@ isPlayback = function(){
   //hack for the time being
   //return false;
   
-  if((new Date).getTime() < 1254471240){ //10 / 2 / 2009 @ 3:14
+  if((new Date).getTime()/1000 < 1254471240){ //10 / 2 / 2009 @ 3:14
     //wave is broken: this is a hack
     return wave.getState().get("${playback}");
   }
