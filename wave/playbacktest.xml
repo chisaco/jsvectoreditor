@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<Module>
+<ModulePrefs title="Playback Test" height="120">
+  <Require feature="wave" /> 
+</ModulePrefs>
+<Content type="html">
+<![CDATA[ 
+    <script type="text/javascript">
+
+    function stateUpdated() {
+      alert("Playback State is" + wave.isPlayback());
+    }
+ 
+    function init() {
+      if (wave && wave.isInWaveContainer()) {
+        wave.setStateCallback(stateUpdated);
+      }
+    }
+    gadgets.util.registerOnLoadHandler(init);
+    </script>
+  ]]> 
+  </Content>
+</Module>
