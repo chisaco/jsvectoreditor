@@ -51,6 +51,20 @@
     return wave.getState().get(row)
   }
   
+  var lastfail = 0;
+  function playback_fail(){
+      var lastlock = 0;
+    
+    
+  if(wave.isPlayback()){
+  if(lastfail < (new Date).getTime() - 1000){
+  
+  alert("Wave is reporting that it is in Playback mode. Editing has been disabled.");
+          lastfail = (new Date).getTime();
+  }
+  }
+  }
+  
   function is_locked(name){
     //return index_of(name,get_subkeys("locked:")) != -1;
     
@@ -241,7 +255,7 @@ dumpshape = function(shape){
             lastmove = (new Date).getTime()
           }
         }else{
-        if(wave.isPlayback())alert("Wave is reporting that it is in Playback mode. Editing has been disabled.");
+        playback_fail()
         }
   })
     //},1000)
@@ -252,7 +266,7 @@ dumpshape = function(shape){
         wave_set("data:"+shape.id, JSON.stringify(dumpshape(shape)));
         lock_shape(shape.id);
     }else{
-      if(wave.isPlayback())alert("Wave is reporting that it is in Playback mode. Editing has been disabled.");
+      playback_fail()
     }
     })
     
@@ -272,7 +286,7 @@ dumpshape = function(shape){
         showlock(locker)
         return false
       }
-      if(wave.isPlayback())alert("Wave is reporting that it is in Playback mode. Editing has been disabled.");
+      playback_fail()
       if(wave.isPlayback())return false;
       
       //if nobody's locked it
@@ -313,7 +327,7 @@ dumpshape = function(shape){
         unlock_shape(shape.id);
       },10)
       }
-      if(wave.isPlayback())alert("Wave is reporting that it is in Playback mode. Editing has been disabled.");
+      playback_fail()
     })
     
     
@@ -327,7 +341,7 @@ dumpshape = function(shape){
       //}
       }
       
-      if(wave.isPlayback())alert("Wave is reporting that it is in Playback mode. Editing has been disabled.");
+      playback_fail()
     })
     })
   }
