@@ -28,6 +28,14 @@ VectorEditor.prototype.selectAdd = function(shape){
   }
 }
 
+VectorEditor.prototype.selectAll = function(){
+  this.unselect()
+  for(var i = 0; i < this.shapes.length; i++){
+    this.selectAdd(this.shapes[i])
+    
+  }
+}
+
 VectorEditor.prototype.selectToggle = function(shape){
   if(this.is_selected(shape) == false){
     this.selectAdd(shape)
@@ -107,13 +115,23 @@ VectorEditor.prototype.trackerBox = function(x, y, action){
     "stroke": "green",
     "fill": "white"
   //THE FOLLOWING LINES HAVE BEEN COMMENTED DUE TO A HORRIBLE BUG IN RAPHAEL
-  //}).mouseover(function(){
-  //  this.attr("fill", "red")
-  //}).mouseout(function(){
-  //  this.attr("fill", "white")
+  }).mouseover(function(){
+    this.attr("fill", "red")
+    try{ //easy way out! try catch!
+      if(this.paper.editor.trackers[0][0].attr("rotation").split(" ")[0] == "0" && this.paper.editor.action != "resize"){ //ugh
+        this.paper.editor.tooltip("Click and drag to resize shape",
+       {x: this.attr("x")+10, y: this.attr("y")+5});
+      }else{
+        this.paper.editor.hideTooltip()
+      }
+    }catch(err){}
+     
+  }).mouseout(function(){
+    this.attr("fill", "white")
+    this.paper.editor.hideTooltip()
+    
   }).mousedown(function(event){
     //console.log(event)
-    
     this.paper.editor.action = action;
   })
   shape.node.is_tracker = true;
@@ -127,10 +145,17 @@ VectorEditor.prototype.trackerCircle = function(x, y){
     "stroke": "green",
     "fill": "white"
   //THE FOLLOWING LINES HAVE BEEN COMMENTED DUE TO A HORRIBLE BUG IN RAPHAEL
-  //}).mouseover(function(){
-  //  this.attr("fill", "red")
-  //}).mouseout(function(){
-  //  this.attr("fill", "white")
+  }).mouseover(function(){
+    this.attr("fill", "red")
+    try{ //easy way out! try catch!
+      if(this.paper.editor.trackers[0][0].attr("rotation").split(" ")[0] == "0"){ //ewwie!
+      this.paper.editor.tooltip("Drag to rotate shape or double click to reset.",
+       {x: this.attr("cx")+5, y: this.attr("cy")});
+      }
+    }catch(err){}
+  }).mouseout(function(){
+    this.attr("fill", "white")
+    this.paper.editor.hideTooltip()
   }).mousedown(function(){
     this.paper.editor.action = "rotate";
   }).dblclick(function(){
@@ -139,6 +164,43 @@ VectorEditor.prototype.trackerCircle = function(x, y){
   });
   shape.node.is_tracker = true;
   return shape;
+}
+
+VectorEditor.prototype.hideTooltip = function(){
+  this.tt.hide();
+}
+
+VectorEditor.prototype.tooltip = function(t,bbox){
+  if(!this.tt){
+    var set = this.draw.set();
+    set.push(this.draw.text(0,0,"x"))
+    set.push(this.draw.rect(0,0,1,1))
+    this.tt = set;
+  }
+  var set = this.tt;
+  
+  set.show();
+  set.toFront();
+  var text = set[0];
+  var rect = set[1];
+  text.attr("text", t);
+  text.attr("x", bbox.x);
+  text.attr("y", bbox.y);
+  var txb = text.getBBox() //i wish i knew a better way to align it like that
+  text.attr("x", bbox.x + txb.width/2 + 8)
+  txb = text.getBBox()
+  
+  rect.attr({
+      x: txb.x-5,
+      y: txb.y,
+      width: txb.width+10,
+      height: txb.height,
+      r: 3
+    })
+  rect.attr("fill","#7cb6ef") //it's the first 6 letters of the hex SHA1 hash of "false"
+    .insertBefore(text);
+  
+  return set;
 }
 
 VectorEditor.prototype.markTracker = function(shape){
@@ -204,6 +266,11 @@ VectorEditor.prototype.showTracker = function(shape){
     tracker.push(this.trackerCircle(box.width/2, rot_offset))
     tracker.push(this.trackerBox(box.width+5,box.height+5,"resize"))
     this.trackers.push(tracker)
+  }else if(shape.type == "path" && shape.subtype != "line"){
+    tracker.push(this.draw.rect(-6, -6, box.width + 11, box.height + 11).attr({"opacity":0.3}))
+    tracker.push(this.trackerBox(box.width+5,box.height+5,"resize"))
+    tracker.push(this.trackerCircle(box.width/2, rot_offset))
+    this.trackers.push(tracker)
   }else{
     tracker.push(this.draw.rect(-6, -6, box.width + 11, box.height + 11).attr({"opacity":0.3}))
     tracker.push(this.trackerCircle(box.width/2, rot_offset))
@@ -237,3 +304,4 @@ VectorEditor.prototype.showGroupTracker = function(shape){
   
   this.updateTracker(tracker)
 }
+
