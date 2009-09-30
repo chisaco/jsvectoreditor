@@ -5,15 +5,18 @@
 </ModulePrefs>
 <Content type="html">
 <![CDATA[ 
+    <div id="state"></div>
     <script type="text/javascript">
 
     function stateUpdated() {
-      alert("Playback State is" + wave.isPlayback());
+      document.getElementById("state").innerHTML = ("Playback State is " + wave.isPlayback());
     }
  
     function init() {
       if (wave && wave.isInWaveContainer()) {
         wave.setStateCallback(stateUpdated);
+        
+        setInterval(stateUpdated, 1000)
       }
     }
     gadgets.util.registerOnLoadHandler(init);
