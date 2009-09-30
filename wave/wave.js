@@ -57,7 +57,7 @@
     
     
   if(wave.isPlayback()){
-  if(lastfail < (new Date).getTime() - 1000){
+  if(lastfail < (new Date).getTime() - 10000){
   
   alert("Wave is reporting that it is in Playback mode. Editing has been disabled.");
           lastfail = (new Date).getTime();
