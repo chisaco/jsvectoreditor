@@ -1,5 +1,20 @@
   var editor = null;
 
+isPlayback = function(){
+  //hack for the time being
+  //return false;
+  
+  if((new Date).getTime() < 1254471240){ //10 / 2 / 2009 @ 3:14
+    //wave is broken: this is a hack
+    return wave.getState().get("${playback}");
+  }
+  
+  if(wave_get("FORCE_OVERRIDE_PLAYBACK") == "TRUE"){
+    return true;
+  }
+  return wave.isPlayback()
+}
+
   function resetGadget(){
     var keys = wave.getState().getKeys()
     var state = {}
@@ -56,7 +71,7 @@
       var lastlock = 0;
     
     
-  if(wave.isPlayback()){
+  if(isPlayback()){
   if(lastfail < (new Date).getTime() - 10000){
   
   alert("Wave is reporting that it is in Playback mode. Editing has been disabled.");
@@ -110,7 +125,7 @@
   function stateChanged(){
     var keys = get_subkeys("data:");
     
-    if(wave.isPlayback()){
+    if(isPlayback()){
     editor.deleteAll()
        for(var i = 0; i < keys.length; i++){
         var text = wave_get("data:"+keys[i]);
@@ -244,7 +259,7 @@ dumpshape = function(shape){
     })
     //setInterval(function(){
     editor.on("mousemove",function(){
-    if(!wave.isPlayback()){
+    if(!isPlayback()){
               if((new Date).getTime()-lastmove > 500){
             for(var i =0;i<editor.selected.length;i++){
                shape = editor.selected[i]
@@ -261,7 +276,7 @@ dumpshape = function(shape){
     //},1000)
     
     editor.on("addedshape", function(event, shape, no_select){
-      if(!no_select  && !wave.isPlayback()){
+      if(!no_select  && !isPlayback()){
         //console.log("Initial Add Shape: ",shape.id)
         wave_set("data:"+shape.id, JSON.stringify(dumpshape(shape)));
         lock_shape(shape.id);
@@ -287,7 +302,7 @@ dumpshape = function(shape){
         return false
       }
       playback_fail()
-      if(wave.isPlayback())return false;
+      if(isPlayback())return false;
       
       //if nobody's locked it
       lock_shape(shape.id)
@@ -295,7 +310,7 @@ dumpshape = function(shape){
     })
     
     editor.on("delete", function(event,shape){
-      if(shape && !wave.isPlayback()){
+      if(shape && !isPlayback()){
       var locker;
       if(locker = is_locked(shape.id)){
         //oh noes! it's locked
@@ -308,7 +323,7 @@ dumpshape = function(shape){
     })
     
     editor.on("selectadd", function(event,shape){
-      if(shape && !wave.isPlayback()){
+      if(shape && !isPlayback()){
       var locker;
       if(locker = is_locked(shape.id)){
         //oh noes! it's locked
@@ -321,7 +336,7 @@ dumpshape = function(shape){
     })
     
     editor.on("delete", function(event, shape){
-    if(!wave.isPlayback()){
+    if(!isPlayback()){
       setTimeout(function(){
         wave_set("data:"+shape.id, 'DEL/'+(new Date()).getTime());
         unlock_shape(shape.id);
@@ -332,7 +347,7 @@ dumpshape = function(shape){
     
     
     editor.on("unselect", function(event, shape){
-      if(shape && !wave.isPlayback()){
+      if(shape && !isPlayback()){
         unlock_shape(shape.id);
         //        if(!is_locked(shape.id)){
         //console.log("add shape (unselect):",shape.id)
