@@ -240,6 +240,8 @@ dumpshape = function(shape){
             }
             lastmove = (new Date).getTime()
           }
+        }else{
+        if(wave.isPlayback())alert("Wave is reporting that it is in Playback mode. Editing has been disabled.");
         }
   })
     //},1000)
@@ -249,6 +251,8 @@ dumpshape = function(shape){
         //console.log("Initial Add Shape: ",shape.id)
         wave_set("data:"+shape.id, JSON.stringify(dumpshape(shape)));
         lock_shape(shape.id);
+    }else{
+      if(wave.isPlayback())alert("Wave is reporting that it is in Playback mode. Editing has been disabled.");
     }
     })
     
@@ -268,6 +272,7 @@ dumpshape = function(shape){
         showlock(locker)
         return false
       }
+      if(wave.isPlayback())alert("Wave is reporting that it is in Playback mode. Editing has been disabled.");
       if(wave.isPlayback())return false;
       
       //if nobody's locked it
@@ -308,6 +313,7 @@ dumpshape = function(shape){
         unlock_shape(shape.id);
       },10)
       }
+      if(wave.isPlayback())alert("Wave is reporting that it is in Playback mode. Editing has been disabled.");
     })
     
     
@@ -320,6 +326,8 @@ dumpshape = function(shape){
         //sendUpdates();
       //}
       }
+      
+      if(wave.isPlayback())alert("Wave is reporting that it is in Playback mode. Editing has been disabled.");
     })
     })
   }
