@@ -21,7 +21,7 @@ function VectorEditor(elem, width, height){
     "fill": "#ff0000",
     "stroke-opacity": 1,
     "fill-opacity": 1,
-    "text": "elitist"
+    "text": "Text"
   }
      
   this.mode = "select";
@@ -68,23 +68,40 @@ function VectorEditor(elem, width, height){
   if(window.Ext){
     Ext.get(elem).on("mousedown",function(event){
       event.preventDefault()
+      
+      if(event.button == 2){
+        //this.lastmode = this.mode;
+        this.setMode("select") //tempselect
+      }
+      if(event.button == 1){
+        return;
+      }
       this.onMouseDown(event.getPageX() - offset()[0], event.getPageY() - offset()[1], event.getTarget())
+      return false;
     }, this);
     Ext.get(elem).on("mousemove",function(event){
       event.preventDefault()
       this.onMouseMove(event.getPageX()  - offset()[0], event.getPageY()- offset()[1], event.getTarget())
+      return false;
     }, this)
     Ext.get(elem).on("mouseup",function(event){
       event.preventDefault()
       this.onMouseUp(event.getPageX() - offset()[0], event.getPageY() - offset()[1], event.getTarget())
+      return false;
     }, this)
     Ext.get(elem).on("dblclick",function(event){
       event.preventDefault()
       this.onDblClick(event.getPageX() - offset()[0], event.getPageY()- offset()[1], event.getTarget())
+      return false;
     }, this)
   }else if(window.jQuery){
     $(elem).mousedown(bind(function(event){
       event.preventDefault()
+      
+      if(event.button == 2){
+        //this.lastmode = this.mode;
+        this.setMode("select") //tempselect
+      }
       this.onMouseDown(event.clientX - offset()[0], event.clientY - offset()[1], event.target)
     }, this));
     $(elem).mousemove(bind(function(event){
@@ -283,9 +300,11 @@ VectorEditor.prototype.onMouseDown = function(x, y, target){
     }
   }else{
     if(this.mode == "polygon"){
-        this.selected[0].lineTo(x, y)
+        //this.selected[0].lineTo(x, y)
+        this.selected[0].attr("path", this.selected[0].attrs.path + 'L'+x+' '+y)
     }
   }
+  return false;
 }
 
 VectorEditor.prototype.onMouseMove = function(x, y, target){
@@ -321,15 +340,30 @@ VectorEditor.prototype.onMouseMove = function(x, y, target){
         }
       }else if(this.action == "resize"){
         if(!this.onGrabXY){ //technically a misnomer
+          if(this.selected[0].type == "ellipse"){
           this.onGrabXY = [
-            this.selected[0].attr("x"),
-            this.selected[0].attr("y")
+            this.selected[0].attr("cx"),
+            this.selected[0].attr("cy")
           ]
+          }else if(this.selected[0].type == "path"){
+            this.onGrabXY = [
+              this.selected[0].getBBox().x,
+              this.selected[0].getBBox().y,
+              this.selected[0].getBBox().width,
+              this.selected[0].getBBox().height
+            ]
+          }else{
+            this.onGrabXY = [
+              this.selected[0].attr("x"),
+              this.selected[0].attr("y")
+            ]
+          }
+          //this.onGrabBox = this.selected[0].getBBox()
         }
         var box = this.selected[0].getBBox()
         var nxy = this.returnRotatedPoint(x, y, box.x + box.width/2, box.y + box.height/2, -this.selected[0].attr("rotation"))
-        x = nxy[0]
-        y = nxy[1]
+        x = nxy[0] - 5
+        y = nxy[1] - 5
         if(this.selected[0].type == "rect"){
           this.resize(this.selected[0], x - this.onGrabXY[0], y - this.onGrabXY[1], this.onGrabXY[0], this.onGrabXY[1])
         }else if(this.selected[0].type == "image"){
@@ -338,6 +372,8 @@ VectorEditor.prototype.onMouseMove = function(x, y, target){
           this.resize(this.selected[0], x - this.onGrabXY[0], y - this.onGrabXY[1], this.onGrabXY[0], this.onGrabXY[1])
         }else if(this.selected[0].type == "text"){
           this.resize(this.selected[0], x - this.onGrabXY[0], y - this.onGrabXY[1], this.onGrabXY[0], this.onGrabXY[1])
+        }else if(this.selected[0].type == "path"){
+          this.selected[0].scale((x - this.onGrabXY[0])/this.onGrabXY[2], (y - this.onGrabXY[1])/this.onGrabXY[3], this.onGrabXY[0], this.onGrabXY[1])
         }
         this.newTracker(this.selected[0])
       }
@@ -352,7 +388,8 @@ VectorEditor.prototype.onMouseMove = function(x, y, target){
     }else if(this.mode == "text"){
       this.resize(this.selected[0], x - this.onHitXY[0], y - this.onHitXY[1], this.onHitXY[0], this.onHitXY[1])
     }else if(this.mode == "path"){
-      this.selected[0].lineTo(x, y);
+      //this.selected[0].lineTo(x, y);
+      this.selected[0].attr("path", this.selected[0].attrs.path + 'L'+x+' '+y)
     }else if(this.mode == "polygon" || this.mode == "line"){
       //this.selected[0].path[this.selected[0].path.length - 1].arg[0] = x
       //this.selected[0].path[this.selected[0].path.length - 1].arg[1] = y
@@ -374,14 +411,18 @@ VectorEditor.prototype.onMouseMove = function(x, y, target){
         }
         //its such a pity that raphael has lost the ability to do it without hacks -_-
         this.selected[0].attr("path", pathsplit)
+        this.selected[0].attr("path", this.selected[0].attrs.path + 'L'+x+' '+y)
+        
       }else{
         //console.debug(pathsplit)
         //normally when this executes there's somethign strange that happened
+        this.selected[0].attr("path", this.selected[0].attrs.path + 'L'+x+' '+y)
       }
-      this.selected[0].lineTo(x, y)
+      //this.selected[0].lineTo(x, y)
     }
   }
   
+  return false;
 }
 
 
@@ -397,10 +438,11 @@ VectorEditor.prototype.onDblClick = function(x, y, target){
       this.deleteShape(this.selected[0])
     }
     if(this.mode == "polygon"){
-      this.selected[0].andClose()
+      //this.selected[0].andClose()
       this.unselect()
     }
   }
+  return false;
 }
 
 
@@ -462,5 +504,12 @@ VectorEditor.prototype.onMouseUp = function(x, y, target){
       this.unselect()
     }
   }
+  if(this.lastmode){
+    this.setMode(this.lastmode);
+    //this.mode = this.lastmode //not selectmode becasue that unselects
+    delete this.lastmode;
+  }
+  return false;
 }
+
 

@@ -43,11 +43,11 @@ VectorEditor.prototype.clearShapes = function(){
 }
 
 VectorEditor.prototype.generateUUID = function(){
-  var uuid = ""
-  for(var i = 0; i < 16; i++){
-    uuid += "abcdefghijklmnopqrstuvwxyz0123456789".charAt(Math.floor(Math.random()*Math.min(36,26+i)));
+  var uuid = "", d = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  for(var i = 0; i < 4/*16*/; i++){
+    uuid += d.charAt(Math.floor(Math.random()*(i?d.length:(d.length-10))));
   }
-  return "shape:"+uuid;
+  return uuid;
 }
 
 VectorEditor.prototype.getShapeById = function(v){
@@ -157,3 +157,4 @@ VectorEditor.prototype.resize = function(object, width, height, x, y){
     //object.node.style.fontSize = null;
   }
 }
+
