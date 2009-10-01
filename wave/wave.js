@@ -189,7 +189,7 @@ isPlayback = function(){
 	  if(shape.type == "rect"){
 	    newshape = draw.rect(0, 0,0, 0)
 	  }else if(shape.type == "path"){
-	    newshape = draw.path({})
+	    newshape = draw.path("")
 	  }else if(shape.type == "image"){
       newshape = draw.image(shape.src, 0, 0, 0, 0)
     }else if(shape.type == "ellipse"){
