@@ -171,7 +171,10 @@ isPlayback = function(){
         
         try {
           var json = JSON.parse(text);
-          
+        }catch(err){
+          alert('Parse '+err.message+"\n"+text)
+        }  
+        try {
           if(editor.getShapeById(keys[i]) == null){
             loadShape(json)
             //alert('load'+keys[i])
@@ -179,10 +182,10 @@ isPlayback = function(){
             loadShape(json,true,true)
             //alert('load2'+keys[i])
           }
-        }catch(err){
-          alert(err.message)
-        }
         
+        }catch(err){
+          alert('Render '+err.message+"\n"+text)
+        } 
         
     }
     
