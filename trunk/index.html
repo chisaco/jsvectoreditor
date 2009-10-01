@@ -117,9 +117,10 @@
   <script type="text/javascript">
   
   function setMode(mode){
-    editor.setMode(mode=='selectp'?'select+':mode);
+  
     $("button").attr("disabled",null);
     $("#"+mode).attr("disabled","true");
+    editor.setMode(mode=='selectp'?'select+':mode);
   }
 
     
