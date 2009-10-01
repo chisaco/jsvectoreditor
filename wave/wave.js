@@ -217,6 +217,13 @@ isPlayback = function(){
       newshape = draw.text(0, 0, shape.text)
     }
     }
+    
+    for(var i in shape){
+      if(attr.join("").indexOf(i) == -1){
+        delete shape[i];
+      }
+    }
+    
 	  if(newshape){
       if(!animate){
 	    newshape.attr(shape)
@@ -238,6 +245,8 @@ isPlayback = function(){
 
 var lastmove = 0
 
+var attr = "cx,cy,fill,fill-opacity,font,font-family,font-size,font-weight,gradient,height,opacity,path,r,rotation,rx,ry,src,stroke,stroke-dasharray,stroke-opacity,stroke-width,width,x,y".split(",")
+
 
 dumpshape = function(shape){
     //return Ax.canvas.info(shape)
@@ -246,7 +255,7 @@ dumpshape = function(shape){
       id: shape.id,
       subtype: shape.subtype
     }
-    var attr = "cx,cy,fill,fill-opacity,font,font-family,font-size,font-weight,gradient,height,opacity,path,r,rotation,rx,ry,scale,src,stroke,stroke-dasharray,stroke-opacity,stroke-width,width,x,y,".split(",")
+    
     for(var i = 0; i < attr.length; i++){
       var tmp = shape.attr(attr[i]);
       if(tmp){
