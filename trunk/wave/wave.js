@@ -6,7 +6,11 @@ isPlayback = function(){
   
   if((new Date).getTime()/1000 < 1254471240){ //10 / 2 / 2009 @ 3:14
     //wave is broken: this is a hack
-    return wave.getState().get("${playback}");
+    if(wave && wave.getState && wave.getState() && wave.getState().get){
+      return wave.getState().get("${playback}");
+    }else{
+      return false;
+    }
   }
   
   if(wave_get("FORCE_OVERRIDE_PLAYBACK") == "TRUE"){
