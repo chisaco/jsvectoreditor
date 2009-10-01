@@ -131,6 +131,7 @@ isPlayback = function(){
     
     if(isPlayback()){
     editor.deleteAll()
+    
        for(var i = 0; i < keys.length; i++){
         var text = wave_get("data:"+keys[i]);
         
@@ -139,9 +140,13 @@ isPlayback = function(){
         if(typeof text == "string" && text.indexOf("DEL/") == 0){
             continue;
         }
+        try {
         var json = JSON.parse(text);
         
         loadShape(json,true)
+        }catch(err){
+          alert(err.message)
+        }
        }
     }else{
     
@@ -163,15 +168,22 @@ isPlayback = function(){
           
             continue;
         }
-        var json = JSON.parse(text);
         
-        if(editor.getShapeById(keys[i]) == null){
-          loadShape(json)
-          //alert('load'+keys[i])
-        }else if(!editor.is_selected(editor.getShapeById(keys[i]))){
-          loadShape(json,true,true)
-          //alert('load2'+keys[i])
+        try {
+          var json = JSON.parse(text);
+          
+          if(editor.getShapeById(keys[i]) == null){
+            loadShape(json)
+            //alert('load'+keys[i])
+          }else if(!editor.is_selected(editor.getShapeById(keys[i]))){
+            loadShape(json,true,true)
+            //alert('load2'+keys[i])
+          }
+        }catch(err){
+          alert(err.message)
         }
+        
+        
     }
     
     
