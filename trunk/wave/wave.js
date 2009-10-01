@@ -154,6 +154,7 @@ isPlayback = function(){
           if((new Date()).getTime() - parseInt(text.substr(4)) < 5000){
             //oh noes deleted
             editor.deleteShape(editor.getShapeById(keys[i]))
+            alert('delete'+keys[i])
           }
           
             continue;
@@ -162,9 +163,10 @@ isPlayback = function(){
         
         if(editor.getShapeById(keys[i]) == null){
           loadShape(json)
+          alert('load'+keys[i])
         }else if(!editor.is_selected(editor.getShapeById(keys[i]))){
           loadShape(json,true,true)
-          
+          alert('load2'+keys[i])
         }
     }
     
