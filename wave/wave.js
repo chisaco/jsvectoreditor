@@ -19,6 +19,17 @@ isPlayback = function(){
   return wave.isPlayback()
 }
 
+
+function garbagecollect(){
+    var keys = wave.getState().getKeys()
+    var state = {}
+    for(var i = 0; i < keys.length; i++){
+      if(wave_get(keys[i]).indexOf("DEL/") == 0){
+        state[keys[i]] = null;
+      }
+    }
+    wave.getState().submitDelta(state)
+}
   function resetGadget(){
     var keys = wave.getState().getKeys()
     var state = {}
