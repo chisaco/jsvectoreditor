@@ -117,7 +117,11 @@
   <script type="text/javascript">
   
   function setMode(mode){
-  
+      if(mode == "text"){
+      editor.prefs.text = prompt("Text:",editor.prefs.text)
+    }else if(mode == "image"){
+      editor.prefs.src = prompt("Image Source URL:",editor.prefs.src)
+    }
     $("button").attr("disabled",null);
     $("#"+mode).attr("disabled","true");
     editor.setMode(mode=='selectp'?'select+':mode);
