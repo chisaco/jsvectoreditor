@@ -71,8 +71,7 @@ function garbagecollect(){
     if(val != value){
       if(typeof val == "string" && val.indexOf("DEL/") == 0){
       
-        alert("STRING STUFF"+((new Date()).getTime() - parseInt(val.substr(4))))
-       if((new Date()).getTime() - parseInt(val.substr(4)) < 1337){
+       if((new Date()).getTime() - parseInt(val.substr(4)) < 1337*5){
         alert("NO SET")
           return; //dont change if deleted recently
        }
