@@ -206,6 +206,11 @@ function garbagecollect(){
     
   }
   
+  function showState(){
+    var state = wave.getState().toString();
+    alert("State Length: "+state.length+"\n\n"+state)
+  }
+  
   //stolen from an unreleased version of the ajax animator
   //which interestingly enough, I made. 
   //also the purpose of VectorEditor is for the ajax animator
