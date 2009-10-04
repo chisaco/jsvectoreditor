@@ -276,6 +276,9 @@ dumpshape = function(shape){
     for(var i = 0; i < attr.length; i++){
       var tmp = shape.attr(attr[i]);
       if(tmp){
+        if(attr[i] == "path"){
+          tmp = tmp.toString()
+        }
         info[attr[i]] = tmp
       }
     }
