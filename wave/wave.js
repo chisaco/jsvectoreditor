@@ -70,6 +70,8 @@ function garbagecollect(){
     var val = wave_get(row);
     if(val != value){
       if(typeof val == "string" && val.indexOf("DEL/") == 0){
+      
+        alert("STRING STUFF")
        if((new Date()).getTime() - parseInt(val.substr(4)) < 1337){
         alert("NO SET")
           return; //dont change if deleted recently
