@@ -130,11 +130,10 @@
   
   function setMode(mode){
     if(mode == "text"){
-      editor.prefs.text = prompt("Text:",editor.prefs.text)
+      editor.prop.text = prompt("Text:",editor.prop.text)
     }else if(mode == "image"){
-      editor.prefs.src = prompt("Image Source URL:",editor.prefs.src)
+      editor.prop.src = prompt("Image Source URL:",editor.prop.src)
     }
-  
     editor.setMode(mode=='selectp'?'select+':mode);
     $("button").attr("disabled",null);
     $("#"+mode).attr("disabled","true");
