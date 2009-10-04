@@ -72,7 +72,7 @@ function garbagecollect(){
       if(typeof val == "string" && val.indexOf("DEL/") == 0){
       
        if((new Date()).getTime() - parseInt(val.substr(4)) < 1337*5){
-        alert("NO SET")
+        //alert("NO SET")
           return; //dont change if deleted recently
        }
      }
