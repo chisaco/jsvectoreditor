@@ -71,6 +71,7 @@ function garbagecollect(){
     if(val != value){
       if(typeof val == "string" && val.indexOf("DEL/") == 0){
        if((new Date()).getTime() - parseInt(val.substr(4)) < 1337){
+        alert("NO SET")
           return; //dont change if deleted recently
        }
      }
@@ -410,5 +411,7 @@ dumpshape = function(shape){
     })
     })
   }
+  
+  
   gadgets.util.registerOnLoadHandler(init);
   
