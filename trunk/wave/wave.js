@@ -35,7 +35,7 @@ function garbagecollect(){
     var keys = wave.getState().getKeys()
     var state = {}
     for(var i = 0; i < keys.length; i++){
-      state[keys[i]] = null;
+      state[keys[i]] = 'DEL/'+(new Date()).getTime();//null;
     }
     wave.getState().submitDelta(state)
   }
