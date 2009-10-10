@@ -136,7 +136,7 @@ function garbagecollect(){
         if(time > (new Date).getTime() - (1000*60)){
           return user
         }else{
-          alert("Past Timeout"+time+"sdafjlsdfjalskdf"+((new Date).getTime() - (1000*60)))
+          alert("Past Timeout"+state.split("!t")[1]+"::"+time+"sdafjlsdfjalskdf"+((new Date).getTime() - (1000*60)))
           return false;
         }
         alert("Uh, not lawked")
