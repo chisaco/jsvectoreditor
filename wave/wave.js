@@ -116,7 +116,7 @@ function garbagecollect(){
     var state = wave_get("locked:"+name);
     
     if(state == null){
-        wave.log("State is Null")
+        alert("State is Null")
         return false;
     }
     
@@ -125,7 +125,7 @@ function garbagecollect(){
     
     //never lock what is mine
     if(user == wave.getViewer().getId()){
-      wave.log("Locked By MEEEEE");
+      alert("Locked By MEEEEE");
       return false
     }
     
@@ -136,10 +136,14 @@ function garbagecollect(){
         if(time > (new Date).getTime() - (1000*60)){
           return user
         }else{
+          alert("Past Timeout")
           return false;
         }
+        alert("Uh, not lawked")
+        return false
       }
     }
+    alert("Uh, not lawked + duh internets broke")
     return false
   }
   
