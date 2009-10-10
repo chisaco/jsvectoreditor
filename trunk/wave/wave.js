@@ -40,7 +40,7 @@ function garbagecollect(){
         state[keys[i]] = null;
       }
     }
-    alert(JSON.stringify(state))
+    alert(JSON.stringify(state,null,2))
     wave.getState().submitDelta(state)
 }
   function resetGadget(){
