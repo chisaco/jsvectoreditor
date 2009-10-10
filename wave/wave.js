@@ -20,6 +20,17 @@ isPlayback = function(){
 }
 
 
+function partial_array(keys){
+  for(var i = 0, arr = {}; i < keys.length; i++){
+    arr[keys[i]] = wave_get(keys[i])
+  }
+  return arr
+}
+
+function listlocks(){
+  alert(JSON.stringify(partial_array(get_subkeys("locked:")),null,2));
+}
+
 function garbagecollect(){
     var keys = wave.getState().getKeys()
     var state = {}
