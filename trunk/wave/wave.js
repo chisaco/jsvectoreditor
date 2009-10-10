@@ -20,16 +20,16 @@ isPlayback = function(){
 }
 
 
-function partial_array(keys){
-  for(var i = 0, arr = {}; i < keys.length; i++){
-    arr[keys[i]] = wave_get(keys[i])
+function subkey_assoc(name){
+  for(var i = 0, arr = {}, keys = get_subkeys(name); i < keys.length; i++){
+    arr[name+keys[i]] = wave_get(name+keys[i])
   }
   return arr
 }
 
 function listlocks(){
-  alert(get_subkeys("locked:").join("\n"));
-  alert(JSON.stringify(partial_array(get_subkeys("locked:")),null,2));
+  //alert(get_subkeys("locked:").join("\n"));
+  alert(JSON.stringify(subkey_assoc("locked:"),null,2));
 }
 
 function garbagecollect(){
