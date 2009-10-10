@@ -115,20 +115,26 @@ function garbagecollect(){
     
     var state = wave_get("locked:"+name);
     
-      if(state == null){
-    return false;
-  }
+    if(state == null){
+        wave.log("State is Null")
+        return false;
+    }
+    
+    var user = state.split("!t")[0];
+    var time = parseInt(state.split("!t")[1]);
     
     //never lock what is mine
-    if(state == wave.getViewer().getId()){
+    if(user == wave.getViewer().getId()){
+      wave.log("Locked By MEEEEE");
       return false
     }
+    
     //unlock if owner is dead.
     var people = wave.getParticipants()
-    for(var i = 0; i < people.length; i++){
-      if(people[i].getId() == state.split("!t")[0]){
-        if(parseInt(state.split("!t")[1]) > (new Date).getTime() - (1000*60)){
-          return state.split("!t")[0]
+    for(var i = 0; i < people.length; i++){ //loop peoples
+      if(people[i].getId() == user){
+        if(time > (new Date).getTime() - (1000*60)){
+          return user
         }else{
           return false;
         }
