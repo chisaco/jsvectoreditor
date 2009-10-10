@@ -116,7 +116,7 @@ function garbagecollect(){
     var state = wave_get("locked:"+name);
     
     if(state == null){
-        alert("State is Null")
+        //alert("State is Null")
         return false;
     }
     
@@ -125,7 +125,7 @@ function garbagecollect(){
     
     //never lock what is mine
     if(user == wave.getViewer().getId()){
-      alert("Locked By MEEEEE");
+      //alert("Locked By MEEEEE");
       return false
     }
     
@@ -136,14 +136,14 @@ function garbagecollect(){
         if(time > (new Date).getTime() - (1000*60)){
           return user
         }else{
-          alert("Past Timeout"+state.split("!t")[1]+"::"+time+"sdafjlsdfjalskdf"+((new Date).getTime() - (1000*60)))
+          //alert("Past Timeout"+state.split("!t")[1]+"::"+time+"sdafjlsdfjalskdf"+((new Date).getTime() - (1000*60)))
           return false;
         }
-        alert("Uh, not lawked")
+        //alert("Uh, not lawked")
         return false
       }
     }
-    alert("Uh, not lawked + duh internets broke")
+    //alert("Uh, not lawked + duh internets broke")
     return false
   }
   
@@ -152,7 +152,7 @@ function garbagecollect(){
   function lock_shape(name){
     
     //console.log("Locking:",name)
-    wave_set("locked:"+name, wave.getViewer().getId());
+    wave_set("locked:"+name, wave.getViewer().getId()+"!t"+(new Date).getTime());
   }
   
   function unlock_shape(name){
