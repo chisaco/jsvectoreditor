@@ -49,6 +49,9 @@
     <button onclick="editor.clearShapes()"><img src="http://ajaxanimator.googlecode.com/svn/trunk/ajaxanimator/img/silk/arrow_rotate_clockwise.png" title="Reset"></button>
     <button onclick="showState()"><img src="http://ajaxanimator.googlecode.com/svn/trunk/ajaxanimator/img/silk/script_code.png" title="Wave State"></button>
     <button onclick="garbagecollect()"><img src="http://ajaxanimator.googlecode.com/svn/trunk/ajaxanimator/img/silk/bin.png" title="Garbage Collect"></button>
+    
+    <button onclick="listlocks()"><img src="http://ajaxanimator.googlecode.com/svn/trunk/ajaxanimator/img/silk/key.png" title="Show Shape Locks"></button>
+    <button onclick="unlock_all()"><img src="http://ajaxanimator.googlecode.com/svn/trunk/ajaxanimator/img/silk/key_delete.png" title="Unlock All Shapes"></button>
     <br>
     
     
