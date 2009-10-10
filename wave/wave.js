@@ -28,6 +28,7 @@ function partial_array(keys){
 }
 
 function listlocks(){
+  alert(get_subkeys("locked:").join("\n"));
   alert(JSON.stringify(partial_array(get_subkeys("locked:")),null,2));
 }
 
