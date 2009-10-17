@@ -277,18 +277,22 @@ function garbagecollect(){
     }
     }
     
+    var nobj = {}
     for(var i in shape){
-      if(attr.join("").indexOf(i) == -1){
-        delete shape[i];
+      if(attr.join(",").indexOf(i) != -1){
+        //delete shape[i];
+        nobj[i] = shape[i]
       }
     }
     
 	  if(newshape){
       if(!animate){
-	      newshape.attr(shape)
+	      newshape.attr(nobj)
       }else{
-        newshape.animate(shape,314,function(){
-         //   newshape.attr(shape)
+        
+        alert(JSON.stringify(nobj));
+        newshape.animate(nobj, 314,function(){
+            newshape.attr(nobj)
        })
       }
 	    newshape.id = shape.id
