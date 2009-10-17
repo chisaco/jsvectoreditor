@@ -284,12 +284,12 @@ function garbagecollect(){
     }
     
 	  if(newshape){
-      if(!animate){
-	    newshape.attr(shape)
-    }else{
-      newshape.animate(shape,314,function(){
-          newshape.attr(shape)
-      })
+      if(!animate || shape.type == "text"){
+	      newshape.attr(shape)
+      }else{
+        newshape.animate(shape,314,function(){
+            newshape.attr(shape)
+        })
     }
 	    newshape.id = shape.id
 	    newshape.subtype = shape.subtype
