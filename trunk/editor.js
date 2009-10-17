@@ -275,6 +275,7 @@ VectorEditor.prototype.onMouseDown = function(x, y, target){
       shape.subtype = "line"
     }else if(this.mode == "polygon"){
       shape = this.draw.path("M{0},{1}",x,y)
+      shape.polypoints = [[x,y]]
       shape.subtype = "polygon"
     }else if(this.mode == "image"){
       shape = this.draw.image(this.prop.src, x, y, 0, 0);
@@ -299,15 +300,14 @@ VectorEditor.prototype.onMouseDown = function(x, y, target){
       this.addShape(shape)
     }
   }else{
-    if(this.mode == "polygon"){
-        //this.selected[0].lineTo(x, y)
-        this.selected[0].attr("path", this.selected[0].attrs.path + 'L'+x+' '+y)
-    }
+    
   }
   return false;
 }
 
 VectorEditor.prototype.onMouseMove = function(x, y, target){
+
+
   this.fire("mousemove")
   if(this.mode == "select" || this.mode == "delete"){
     if(this.selectbox){
@@ -407,11 +407,20 @@ VectorEditor.prototype.onMouseMove = function(x, y, target){
           //safety measure, the next should work, but in practice, no
           pathsplit.splice(1)
         }else{
-          pathsplit.splice(pathsplit.length - 1, 1);
+          var last = pathsplit[pathsplit.length -1];
+          //console.log(this.selected[0].polypoints.length, pathsplit.length)
+          if(this.selected[0].polypoints.length < pathsplit.length){
+          //if(Math.floor(last[1]) == this.lastpointsX && Math.floor(last[2]) == this.lastpointsY){
+            pathsplit.splice(pathsplit.length - 1, 1);
+            }
+          //}else{
+          //  console.log(last[1], last[2], this.lastpointsX, this.lastpointsY)
+          //}
         }
-        //its such a pity that raphael has lost the ability to do it without hacks -_-
-        this.selected[0].attr("path", pathsplit)
-        this.selected[0].attr("path", this.selected[0].attrs.path + 'L'+x+' '+y)
+        //this.lastpointsX = x; //TO FIX A NASTY UGLY BUG
+        //this.lastpointsY = y; //SERIOUSLY
+        
+        this.selected[0].attr("path", pathsplit.toString() + 'L'+x+' '+y)
         
       }else{
         //console.debug(pathsplit)
@@ -502,6 +511,12 @@ VectorEditor.prototype.onMouseUp = function(x, y, target){
       this.unselect()
     }else if(this.mode == "text"){
       this.unselect()
+    }else if(this.mode == "polygon"){
+        //this.selected[0].lineTo(x, y)
+      this.selected[0].attr("path", this.selected[0].attrs.path + 'L'+x+' '+y)
+      if(!this.selected[0].polypoints) this.selected[0].polypoints = [];
+      this.selected[0].polypoints.push([x,y])  
+      
     }
   }
   if(this.lastmode){

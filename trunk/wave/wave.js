@@ -248,6 +248,8 @@ function garbagecollect(){
   //so why am i citing myself?
   
   loadShape = function(shape, noattachlistener, animate){
+    shape = Ax.decompress_attr(shape);
+  
     var instance = editor//instance?instance:Ax.canvas
     if(!shape || !shape.type || !shape.id)return;
     
@@ -345,7 +347,9 @@ dumpshape = function(shape){
             for(var i =0;i<editor.selected.length;i++){
                shape = editor.selected[i]
                 //console.log("add shape (interval):",shape) 
-                wave_set("data:"+shape.id,JSON.stringify(dumpshape(shape)))
+                //wave_set("data:"+shape.id,JSON.stringify(dumpshape(shape)))
+                set_shape(shape.id, dumpshape(shape));
+        
                 lock_shape(shape.id)
             }
             lastmove = (new Date).getTime()
@@ -359,7 +363,9 @@ dumpshape = function(shape){
     editor.on("addedshape", function(event, shape, no_select){
       if(!no_select  && !isPlayback()){
         //console.log("Initial Add Shape: ",shape.id)
-        wave_set("data:"+shape.id, JSON.stringify(dumpshape(shape)));
+        //wave_set("data:"+shape.id, JSON.stringify(dumpshape(shape)));
+        set_shape(shape.id, dumpshape(shape));
+        
         lock_shape(shape.id);
     }else{
       playback_fail()
@@ -432,7 +438,9 @@ dumpshape = function(shape){
         unlock_shape(shape.id);
         //        if(!is_locked(shape.id)){
         //console.log("add shape (unselect):",shape.id)
-        wave_set("data:"+shape.id,JSON.stringify(dumpshape(shape)))
+        //wave_set("data:"+shape.id,JSON.stringify(dumpshape(shape)))
+        set_shape(shape.id, dumpshape(shape));
+        
         //sendUpdates();
       //}
       }
@@ -443,5 +451,149 @@ dumpshape = function(shape){
   }
   
   
+  
+  function set_shape(id,shape){
+    wave_set("data:"+id, 
+      Ax.small_json(
+        Ax.compress_attr(shape)
+      ));
+  }
+  
   gadgets.util.registerOnLoadHandler(init);
+  
+  
+  
+//////////////////////////////COMPRESSED WAVE STATE/////////////////////////////
+///////////////////////////////STOLEN FROM AJAX ANIMATOR/////////////////////////  
+var Ax = {};
+
+
+Ax.small_json = function(obj){
+  //simple JSON stringifier which creates small files
+  //later if its still needed
+  //mostly hackish as of now
+  var nobj = {};
+  for(var x in obj){
+    //do hackishhack if its a legal name
+    if(x.indexOf("-") == -1 && x.indexOf("!") == -1 && x.indexOf("/") == -1 && 
+    x.indexOf("^") == -1 && x.indexOf("*") == -1 && x.indexOf("\\") == -1 && 
+    x.indexOf(":") == -1 && x.indexOf("#") == -1 && x.indexOf("'") == -1 && 
+    x.indexOf('"') == -1 && "0123456789".indexOf(x[0]) == -1){
+      nobj["___"+x+"___"] = obj[x]
+    }
+  }
+  var out = JSON.stringify(nobj);//Ext.util.JSON.encode(nobj);
+  out = out.replace(/___"/g, "");
+  out = out.replace(/"___/g, "");
+  return out;
+}
+
+
+Ax.inverse_map = function(map){
+  var nmap = {};
+  for(var key in map){
+    nmap[map[key]] = key;
+  }
+  return nmap;
+}
+
+Ax.compress_map = {
+      "height": "h",
+      "width": "w",
+      "fill-opacity": "fo",
+      "stroke-opacity": "so",
+      "fill": "f",
+      "stroke": "s",
+      "rotation": "rt",
+      "type": "t",
+      "stroke-width": "sw",
+      "subtype": "st",
+      "path": "p",
+      "font-size": "fs",
+      "text": "tx"
+    }
+    
+
+
+Ax.type_map = {
+  "ellipse": "e",
+  "rect": "r",
+  "image": "i",
+  "text": "t",
+  //RECYCLED FOR SUBTYPES TOO. SORTA HACKISH
+  "line": "l",
+  "path": "p", //brilliant multi-use
+  "polygon": "py"
+}
+
+
+Ax.compress_attr = function(attr){
+  //shrink the old IDs to soemthign smaller and more manageable
+  if(attr.id && attr.id.indexOf("shape:") === 0){
+    if("0123456789".indexOf(attr.id[0]) == -1){
+      attr.id = attr.id.substr(6, 4);
+    }else{
+      attr.id = 's'+attr.id.substr(6, 3);
+    }
+  }
+  
+  
+  var map = Ax.compress_map
+  var type_map = Ax.type_map;
+  
+  var nosend = ["fillColor","lineColor","lineWidth"]
+  
+  
+  //var rmdef = {
+  /* //tweening doesn't take into account defaults. damnit.
+    "fill-opacity": 1,
+    "stroke-opacity": 1,
+    "rotation": 0,
+    "stroke-width": 1
+  */
+  //}
+  var newattr = {};
+  for(var i in attr){
+    if(nosend.indexOf(i) == -1){
+      if(map[i]){
+        //if(rmdef[i] !== attr[i]){
+          if((i == "type" || i == "subtype") && type_map[attr[i]]){
+            newattr[map[i]] = type_map[attr[i]]
+          }else if(i == "path"){
+            newattr[map[i]] = attr[i].toString()
+          }else{
+            newattr[map[i]] = attr[i]
+          }
+        //}
+      }else{
+        newattr[i] = attr[i]
+      }
+    }
+  }
+  return newattr;
+}
+
+Ax.decompress_attr = function(attr){
+  var map = Ax.compress_map
+  var type_map = Ax.inverse_map(Ax.type_map)
+  //var newattr = {};
+  for(var i in map){
+    if(attr[map[i]] !== null && attr[map[i]] !== undefined ){
+      var val = attr[map[i]];
+      if(i == "type" || i == "subtype"){
+        if(type_map[val]){
+          val = type_map[val];
+        }
+      }
+      if(i == "path"){
+        if(typeof val == "string"){
+          val = Ax.parsePath(val);
+        }
+      }
+      attr[i] = val;
+      delete attr[map[i]];
+    }
+  }
+  return attr;
+}
   
