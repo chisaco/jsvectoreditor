@@ -415,6 +415,7 @@ dumpshape = function(shape){
       //if nobody's locked it
       lock_shape(shape.id)
     }
+    return false;
     })
     
     editor.on("selectadd", function(event,shape){
@@ -438,6 +439,7 @@ dumpshape = function(shape){
       },10)
       }
       playback_fail()
+      return false;
     })
     
     
