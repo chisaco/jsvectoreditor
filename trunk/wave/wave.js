@@ -82,21 +82,29 @@ function garbagecollect(){
     return subkeys
   }
   
+  var tempdelta = {};
+  var queued = false;
   function wave_set(row, value){
-    var delta = {}
-    //console.log(row, value)
-    delta[row] = value;
-    var val = wave_get(row);
-    if(val != value){
+     var val = wave_get(row);
+     if(val != value){
       if(typeof val == "string" && val.indexOf("DEL/") == 0){
-      
-       if((new Date()).getTime() - parseInt(val.substr(4)) < 1337*5){
-        //alert("NO SET")
+        if((new Date()).getTime() - parseInt(val.substr(4)) < 1337*5){
           return; //dont change if deleted recently
+        }
        }
+     
+     
+      tempdelta[row] = value;
+      if(queued == false){
+        queued = true;
+        setTimeout(function(){
+          wave.getState().submitDelta(tempdelta)
+          tempdelta = {};
+          queued = false;
+        },1000)
+      }
      }
-      wave.getState().submitDelta(delta)
-    }
+  
   }
   
   function wave_get(row){
