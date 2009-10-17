@@ -284,20 +284,21 @@ function garbagecollect(){
     }
     
 	  if(newshape){
-      if(!animate || shape.type == "text"){
-	      newshape.attr(shape)
+      if(!animate){
+	      //newshape.attr(shape)
       }else{
-        newshape.animate(shape,314,function(){
-            newshape.attr(shape)
-        })
-    }
+        //newshape.animate(shape,314,function(){
+        //    newshape.attr(shape)
+        //})
+      }
 	    newshape.id = shape.id
 	    newshape.subtype = shape.subtype
-	    
-	        if (!noattachlistener) {
-              //Ext.get(newshape).on("mousedown", Ax.canvas.onHit, Ax.canvas);
-            instance.addShape(newshape,true)
-          }
+  
+      if (!noattachlistener) {
+        instance.addShape(newshape,true)
+      }
+      
+      
 	  }
 
 }
