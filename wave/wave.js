@@ -288,6 +288,9 @@ function garbagecollect(){
 	  if(newshape){
       if(!animate || shape.type == "text"){
 	      newshape.attr(nobj)
+	      if(shape.type == "text"){
+	        alert(JSON.stringify(nobj));
+	      }
       }else{
         
         newshape.animate(nobj, 314,function(){
