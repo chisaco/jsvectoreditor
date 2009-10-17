@@ -585,11 +585,6 @@ Ax.decompress_attr = function(attr){
           val = type_map[val];
         }
       }
-      if(i == "path"){
-        if(typeof val == "string"){
-          val = Ax.parsePath(val);
-        }
-      }
       attr[i] = val;
       delete attr[map[i]];
     }
