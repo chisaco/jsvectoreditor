@@ -287,9 +287,9 @@ function garbagecollect(){
       if(!animate){
 	      newshape.attr(shape)
       }else{
-        //newshape.animate(shape,314,function(){
-            newshape.attr(shape)
-        //})
+        newshape.animate(shape,314,function(){
+         //   newshape.attr(shape)
+       })
       }
 	    newshape.id = shape.id
 	    newshape.subtype = shape.subtype
