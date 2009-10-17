@@ -213,7 +213,7 @@ function garbagecollect(){
         if(typeof text == "string" && text.indexOf("DEL/") == 0){
           if((new Date()).getTime() - parseInt(text.substr(4)) < 5000){
             //oh noes deleted
-            alert("del"+i)
+            //alert("del"+i)
             editor.deleteShape(editor.getShapeById(keys[i]))
             //alert('delete'+keys[i])
           }
@@ -289,7 +289,7 @@ function garbagecollect(){
     }else{
       newshape.animate(shape,314,function(){
           newshape.attr(shape)
-        })
+      })
     }
 	    newshape.id = shape.id
 	    newshape.subtype = shape.subtype
