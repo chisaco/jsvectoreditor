@@ -20,6 +20,13 @@ isPlayback = function(){
 }
 
 
+function unlock_gui(){
+  var locks = get_subkeys("locked:");
+  for(var i = 0; i < locks.length; i++){
+    wave_set("locked:"+locks[i], 'DEL/'+(new Date()).getTime());
+  }
+  alert("Unlocked "+locks.length+" shapes. Remember to garbage collect to clear the remaining useless data.")
+}
 function subkey_assoc(name){
   for(var i = 0, arr = {}, keys = get_subkeys(name); i < keys.length; i++){
     arr[name+keys[i]] = wave_get(name+keys[i])
