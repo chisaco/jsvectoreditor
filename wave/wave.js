@@ -413,9 +413,14 @@ dumpshape = function(shape){
         return false
       }
       //if nobody's locked it
-      lock_shape(shape.id)
+      //lock_shape(shape.id)
+      
+      wave_set("data:"+shape.id, 'DEL/'+(new Date()).getTime());
+        
+      
     }
-    return false;
+        playback_fail()
+        
     })
     
     editor.on("selectadd", function(event,shape){
@@ -431,17 +436,7 @@ dumpshape = function(shape){
     }
     })
     
-    editor.on("delete", function(event, shape){
-    if(!isPlayback()){
-      setTimeout(function(){
-        wave_set("data:"+shape.id, 'DEL/'+(new Date()).getTime());
-        unlock_shape(shape.id);
-      },10)
-      }
-      playback_fail()
-      return false;
-    })
-    
+
     
     editor.on("unselect", function(event, shape){
       if(shape && !isPlayback()){
