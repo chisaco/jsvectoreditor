@@ -279,7 +279,7 @@ function garbagecollect(){
     
     var nobj = {}
     for(var i in shape){
-      if(attr.join(",").indexOf(i) != -1){
+      if((","+attr.join(",")+",").indexOf(","+i+",") != -1){
         //delete shape[i];
         nobj[i] = shape[i]
       }
