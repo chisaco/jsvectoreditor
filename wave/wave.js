@@ -285,10 +285,10 @@ function garbagecollect(){
     
 	  if(newshape){
       if(!animate){
-	      //newshape.attr(shape)
+	      newshape.attr(shape)
       }else{
         //newshape.animate(shape,314,function(){
-        //    newshape.attr(shape)
+            newshape.attr(shape)
         //})
       }
 	    newshape.id = shape.id
