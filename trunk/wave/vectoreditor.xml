@@ -51,7 +51,7 @@
     <button onclick="garbagecollect()"><img src="http://ajaxanimator.googlecode.com/svn/trunk/ajaxanimator/img/silk/bin.png" title="Garbage Collect"></button>
     
     <button onclick="listlocks()"><img src="http://ajaxanimator.googlecode.com/svn/trunk/ajaxanimator/img/silk/key.png" title="Show Shape Locks"></button>
-    <button onclick="unlock_all()"><img src="http://ajaxanimator.googlecode.com/svn/trunk/ajaxanimator/img/silk/key_delete.png" title="Unlock All Shapes"></button>
+    <button onclick="unlock_gui()"><img src="http://ajaxanimator.googlecode.com/svn/trunk/ajaxanimator/img/silk/key_delete.png" title="Unlock All Shapes"></button>
     <br>
     
     
@@ -185,7 +185,7 @@
   
   </script>
        
-        <script type="text/javascript" src="http://jsvectoreditor.googlecode.com/svn/trunk/wave/wave.js?157"></script>
+        <script type="text/javascript" src="http://jsvectoreditor.googlecode.com/svn/trunk/wave/wave.js?158"></script>
     ]]>
   </Content>
 </Module>
