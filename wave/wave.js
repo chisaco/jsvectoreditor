@@ -196,7 +196,7 @@ function garbagecollect(){
         
         loadShape(json,true)
         }catch(err){
-          //humanMsg.displayMsg("<b>Error JSON parsing</b>"+err.message)
+          humanMsg.displayMsg("<b>Error JSON parsing</b>"+err.message)
         }
        }
     }else{
@@ -224,7 +224,7 @@ function garbagecollect(){
         try {
           var json = JSON.parse(text);
         }catch(err){
-          //humanMsg.displayMsg('Error in JSON parsing '+err.message+"\n"+text)
+          humanMsg.displayMsg('Error in JSON parsing '+err.message+"\n"+text)
         }  
         try {
           if(editor.getShapeById(keys[i]) == null){
