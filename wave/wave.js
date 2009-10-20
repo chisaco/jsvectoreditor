@@ -119,7 +119,7 @@ function garbagecollect(){
   if(isPlayback()){
   if(lastfail < (new Date).getTime() - 10000){
   
-  alert("Wave is reporting that it is in Playback mode. Editing has been disabled.");
+  humanMsg.displayMsg("Wave is reporting that it is in Playback mode. Editing has been disabled.");
           lastfail = (new Date).getTime();
   }
   }
@@ -196,7 +196,7 @@ function garbagecollect(){
         
         loadShape(json,true)
         }catch(err){
-          alert(err.message)
+          //humanMsg.displayMsg("<b>Error JSON parsing</b>"+err.message)
         }
        }
     }else{
@@ -224,7 +224,7 @@ function garbagecollect(){
         try {
           var json = JSON.parse(text);
         }catch(err){
-          alert('Parse '+err.message+"\n"+text)
+          //humanMsg.displayMsg('Error in JSON parsing '+err.message+"\n"+text)
         }  
         try {
           if(editor.getShapeById(keys[i]) == null){
@@ -236,7 +236,7 @@ function garbagecollect(){
           }
         
         }catch(err){
-          alert('Render '+err.message+"\n"+text)
+          //alert('Render '+err.message+"\n"+text)
         } 
         
     }
