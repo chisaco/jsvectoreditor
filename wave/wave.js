@@ -1,5 +1,9 @@
   var editor = null;
 
+function jsonparse(str){
+  return eval("("+str+")"); //using JSON.parse throws errors with the new compressed format
+}
+
 isPlayback = function(){
   //hack for the time being
   //return false;
@@ -192,7 +196,7 @@ function garbagecollect(){
             continue;
         }
         try {
-        var json = JSON.parse(text);
+        var json = jsonparse(text);
         
         loadShape(json,true)
         }catch(err){
@@ -222,7 +226,7 @@ function garbagecollect(){
         }
         
         try {
-          var json = JSON.parse(text);
+          var json = jsonparse(text);
         }catch(err){
           humanMsg.displayMsg('Error in JSON parsing '+err.message+"\n"+text)
         }  
