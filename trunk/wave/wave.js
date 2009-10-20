@@ -25,7 +25,7 @@ function unlock_gui(){
   for(var i = 0; i < locks.length; i++){
     wave_set("locked:"+locks[i], 'DEL/'+(new Date()).getTime());
   }
-  alert("Unlocked "+locks.length+" shapes. Remember to garbage collect to clear the remaining useless data.")
+  humanMsg.displayMsg("<b>Unlocked "+locks.length+" shapes.</b> Remember to garbage collect to clear the remaining useless data.")
 }
 function subkey_assoc(name){
   for(var i = 0, arr = {}, keys = get_subkeys(name); i < keys.length; i++){
@@ -36,7 +36,7 @@ function subkey_assoc(name){
 
 function listlocks(){
   //alert(get_subkeys("locked:").join("\n"));
-  alert(JSON.stringify(subkey_assoc("locked:"),null,2));
+  humanMsg.displayMsg("<pre>"+JSON.stringify(subkey_assoc("locked:"),null,2)+"</pre>");
 }
 
 function garbagecollect(){
@@ -47,7 +47,7 @@ function garbagecollect(){
         state[keys[i]] = null;
       }
     }
-    alert(JSON.stringify(state,null,2))
+    humanMsg.displayMsg("<pre>"+JSON.stringify(state,null,2)+"</pre>")
     wave.getState().submitDelta(state)
 }
   function resetGadget(){
@@ -248,7 +248,7 @@ function garbagecollect(){
   
   function showState(){
     var state = wave.getState().toString();
-    alert("State Length: "+state.length+"\n\n"+state)
+    humanMsg.displayMsg("<b>State Length:</b> "+state.length+"\n\n"+state)
   }
   
   //stolen from an unreleased version of the ajax animator
@@ -357,7 +357,7 @@ dumpshape = function(shape){
       //  return alert("Failed! Wave State is MISSING! Not my fault!")
       //}
     }else{
-      return alert("It's only a wave gadget if it's in wave...")
+      return humanMsg.displayMsg("It's only a wave gadget if it's in wave...")
     }
 
     $(window).resize(function(){
@@ -398,7 +398,7 @@ dumpshape = function(shape){
     var lastlock = ""
     function showlock(locker){
       if(locker != lastlock){
-        alert("Shape(s) Locked by "+locker)
+        humanMsg.displayMsg("Shape(s) Locked by "+locker)
         lastlock = locker;
        }
     }

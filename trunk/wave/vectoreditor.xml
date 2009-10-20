@@ -18,7 +18,8 @@
         <script type="text/javascript" src="http://jsvectoreditor.googlecode.com/svn/trunk/shape.js"></script>
         <script type="text/javascript" src="http://jsvectoreditor.googlecode.com/svn/trunk/tracker.js"></script>
        
-       
+       <script type="text/javascript" src="http://jsvectoreditor.googlecode.com/svn/trunk/wave/humanmsg.js"></script>
+        <link href="http://jsvectoreditor.googlecode.com/svn/trunk/wave/humanmsg.css" media="screen" type="text/css" rel="stylesheet">
        
        
        
