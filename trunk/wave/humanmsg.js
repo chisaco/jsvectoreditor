@@ -49,9 +49,9 @@ var humanMsg = {
 		
 			
 			if ( jQuery('#'+humanMsg.logID+' ul').css('display') == 'none') {
-				jQuery('#'+humanMsg.logID+' p').animate({ bottom: 40 }, 200, 'linear', function() {
-					jQuery(this).animate({ bottom: 0 }, 300, 'easeOutBounce', function() { jQuery(this).css({ bottom: 0 }) })
-				})
+				jQuery('#'+humanMsg.logID+' p').animate({ bottom: 40 }, {duration: 200, complete: function() {
+					jQuery(this).animate({ bottom: 0 }, 300, function() { jQuery(this).css({ bottom: 0 }) })
+				}})
 			}
 			
 		})
@@ -79,7 +79,7 @@ var humanMsg = {
 
 		// Only if message is still at peak opacity, fade it out
 		if (jQuery('#'+humanMsg.msgID).css('opacity') == humanMsg.msgOpacity)
-			jQuery('#'+humanMsg.msgID).animate({ opacity: 0 }, 500, function() { jQuery(this).hide() })
+			jQuery('#'+humanMsg.msgID).animate({ opacity: 0 }, {duration: 500, complete: function() { jQuery(this).hide() }})
 	}
 };
 
