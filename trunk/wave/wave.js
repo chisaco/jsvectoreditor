@@ -248,7 +248,8 @@ function garbagecollect(){
   
   function showState(){
     var state = wave.getState().toString();
-    humanMsg.displayMsg("<b>State Length:</b> "+state.length+"\n\n"+state)
+    humanMsg.displayMsg("<b>State Length:</b> "+state.length)
+    alert(state);
   }
   
   //stolen from an unreleased version of the ajax animator
