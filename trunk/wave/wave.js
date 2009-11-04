@@ -291,19 +291,8 @@ function garbagecollect(){
     }
     
 	  if(newshape){
-	  /*
-	  *
-	  *
-	  *
-	  * *********************************** DELETE THE TEXT HACK WHEN IT WORKS ************************
-	  *
-	  *
-	  *
-	  */
-      if(!animate || shape.type == "text"){
-	      newshape.attr(nobj)
-	      
-      }else{
+	  
+      if(!animate){
         
         newshape.animate(nobj, 314,function(){
             newshape.attr(nobj)
