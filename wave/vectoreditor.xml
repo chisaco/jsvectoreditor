@@ -74,6 +74,7 @@
       <option style="background-color:yellow;" value="yellow"></option> 
       <option style="background-color:aqua;" value="aqua"></option> 
       <option style="background-color:white;" value="white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option> 
+      <option style="background-color:white;" value="none">None</option>  
     </select> 
     <select id="fillopacity" onchange="setFillOpacity(this);"> 
       <option value="1">100%</option> 
@@ -103,6 +104,7 @@
       <option style="background-color:yellow;" value="yellow"></option> 
       <option style="background-color:aqua;" value="aqua"></option> 
       <option style="background-color:white;" value="white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option> 
+      <option style="background-color:white;" value="none">None</option>  
     </select> 
     <select id="strokewidth" onchange="setStrokeWidth(this);"> 
       <option value="1px">1px</option> 
@@ -148,16 +150,15 @@
 
     
   function setFillColor(colors) {
-    var color = colors.options[colors.selectedIndex].value;
-    colors.style.backgroundColor = color;
-    
-    editor.set("fill", color)
+    var color = colors.options[colors.selectedIndex];
+    colors.style.backgroundColor = color.style.backgroundColor;
+    editor.set("fill", color.value)
   }
   
   function setStrokeColor(colors) {
-    var color = colors.options[colors.selectedIndex].value;
-    colors.style.backgroundColor = color;
-    editor.set("stroke", color)
+    var color = colors.options[colors.selectedIndex];
+    colors.style.backgroundColor = color.style.backgroundColor;
+    editor.set("stroke", color.value)
   }
   
   function setStrokeWidth(widths) {
