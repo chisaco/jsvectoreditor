@@ -121,18 +121,21 @@ VectorEditor.prototype.trackerBox = function(x, y, action){
       if(this.paper.editor.trackers[0][0].attr("rotation").split(" ")[0] == "0" && this.paper.editor.action != "resize"){ //ugh
         this.paper.editor.tooltip("Click and drag to resize shape",
        {x: this.attr("x")+10, y: this.attr("y")+5});
-      }else{
+      }else if(this.paper && this.paper.editor && this.paper.editor.hideTooltip){
         this.paper.editor.hideTooltip()
       }
     }catch(err){}
      
   }).mouseout(function(){
     this.attr("fill", "white")
-    this.paper.editor.hideTooltip()
+    if(this.paper && this.paper.editor && this.paper.editor.hideTooltip)
+      this.paper.editor.hideTooltip();
     
   }).mousedown(function(event){
     //console.log(event)
-    this.paper.editor.action = action;
+    if(this.paper && this.paper.editor)
+      this.paper.editor.action = action;
+    
   })
   shape.node.is_tracker = true;
   return shape;
