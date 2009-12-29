@@ -261,6 +261,8 @@ function garbagecollect(){
   //also the purpose of VectorEditor is for the ajax animator
   //so why am i citing myself?
   
+  
+
   loadShape = function(shape, noattachlistener, animate){
     shape = Ax.decompress_attr(shape);
   
@@ -272,7 +274,7 @@ function garbagecollect(){
 	  if(shape.type == "rect"){
 	    newshape = draw.rect(0, 0,0, 0)
 	  }else if(shape.type == "path"){
-	    newshape = draw.path("")
+	    newshape = draw.path("M0,0")
 	  }else if(shape.type == "image"){
       newshape = draw.image(shape.src, 0, 0, 0, 0)
     }else if(shape.type == "ellipse"){
@@ -289,14 +291,13 @@ function garbagecollect(){
         nobj[i] = shape[i]
       }
     }
-    
 	  if(newshape){
-	  
       if(!animate){
-        
         newshape.animate(nobj, 314,function(){
-            newshape.attr(nobj)
-       })
+            newshape.attr(shape)
+        })
+      }else{
+        newshape.attr(shape)
       }
 	    newshape.id = shape.id
 	    newshape.subtype = shape.subtype
