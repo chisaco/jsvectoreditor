@@ -28,7 +28,7 @@
     <button id="text" onclick="setMode('text')"><img src="http://ajaxanimator.googlecode.com/svn/trunk/ajaxanimator/img/icon/text.gif" title="Text"></button>
     <button id="delete" onclick="setMode('delete')"><img src="http://ajaxanimator.googlecode.com/svn/trunk/ajaxanimator/img/icon/delete.gif" title="Delete"></button>
     <button onclick="alert(editor.getMarkup())"><img src="http://ajaxanimator.googlecode.com/svn/trunk/ajaxanimator/img/silk/script_code.png" title="Markup"></button>
-    <button onclick="editor.deleteAll()"><img src="http://ajaxanimator.googlecode.com/svn/trunk/ajaxanimator/img/silk/arrow_rotate_clockwise.png" title="Reset"></button>
+    <button onclick="if(confirm('Are you sure you want to clear the canvas?'))editor.deleteAll();"><img src="http://ajaxanimator.googlecode.com/svn/trunk/ajaxanimator/img/silk/arrow_rotate_clockwise.png" title="Reset"></button>
     <br>
     
     
@@ -51,7 +51,8 @@
       <option style="background-color:green;" value="green"></option> 
       <option style="background-color:yellow;" value="yellow"></option> 
       <option style="background-color:aqua;" value="aqua"></option> 
-      <option style="background-color:white;" value="white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option> 
+      <option style="background-color:white;" value="white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
+      <option style="background-color:white;" value="none">None</option> 
     </select> 
     <select id="fillopacity" onchange="setFillOpacity(this);"> 
       <option value="1">100%</option> 
@@ -81,7 +82,8 @@
       <option style="background-color:green;" value="green"></option> 
       <option style="background-color:yellow;" value="yellow"></option> 
       <option style="background-color:aqua;" value="aqua"></option> 
-      <option style="background-color:white;" value="white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option> 
+      <option style="background-color:white;" value="white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
+      <option style="background-color:white;" value="none">None</option>  
     </select> 
     <select id="strokewidth" onchange="setStrokeWidth(this);"> 
       <option value="1px">1px</option> 
@@ -129,16 +131,15 @@
 
     
   function setFillColor(colors) {
-    var color = colors.options[colors.selectedIndex].value;
-    colors.style.backgroundColor = color;
-    
-    editor.set("fill", color)
+    var color = colors.options[colors.selectedIndex];
+    colors.style.backgroundColor = color.style.backgroundColor;
+    editor.set("fill", color.value)
   }
   
   function setStrokeColor(colors) {
-    var color = colors.options[colors.selectedIndex].value;
-    colors.style.backgroundColor = color;
-    editor.set("stroke", color)
+    var color = colors.options[colors.selectedIndex];
+    colors.style.backgroundColor = color.style.backgroundColor;
+    editor.set("stroke", color.value)
   }
   
   function setStrokeWidth(widths) {
