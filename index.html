@@ -14,7 +14,22 @@
       padding: 1px;
     }
   </style>
-
+    
+    <!-- did i mention i suck at html? -->
+    <div id="dialog" style="position: absolute; display: none;background-color: gray; width: 90%; height: 90%;top: 20px; left: 20px; z-index: 99">
+      <input type="button" value="Import Shapes" onclick="import_shapes()">
+      <!--
+      <input type="button" value="Close" onclick="document.getElementById('dialog').style.display='none'">
+      -->
+      <input type="button" value="Close" onclick="jQuery('#dialog').slideUp()">
+      <br><br>
+      <center>
+      <textarea id="data" style="width: 90%; height: 80%"></textarea>
+      </center>
+    </div>
+    
+    
+    
   <div style="position: absolute; top: 10px; left: 10px; width: 64px">
   
     <button id="select" onclick="setMode('select')"><img src="http://ajaxanimator.googlecode.com/svn/trunk/ajaxanimator/img/icon/select.gif" title="Select"></button>
@@ -29,9 +44,15 @@
     <button id="delete" onclick="setMode('delete')"><img src="http://ajaxanimator.googlecode.com/svn/trunk/ajaxanimator/img/icon/delete.gif" title="Delete"></button>
     <button onclick="alert(editor.getMarkup())"><img src="http://ajaxanimator.googlecode.com/svn/trunk/ajaxanimator/img/silk/script_code.png" title="Markup"></button>
     <button onclick="if(confirm('Are you sure you want to clear the canvas?'))editor.deleteAll();"><img src="http://ajaxanimator.googlecode.com/svn/trunk/ajaxanimator/img/silk/arrow_rotate_clockwise.png" title="Reset"></button>
+    
+    <button id="save" onclick="save()"><img src="http://ajaxanimator.googlecode.com/svn/trunk/ajaxanimator/img/silk/disk.png" title="Delete"></button>
+    <button id="open" onclick="opendialog()"><img src="
+    http://ajaxanimator.googlecode.com/svn/trunk/ajaxanimator/img/silk/folder_go.png" title="Open"></button>
+    
+    
     <br>
     
-    
+
     
 
 
@@ -170,8 +191,80 @@
   
   
   </script>
+  <script src="http://gist.github.com/raw/240659/a709989db7023efb0111ccd89e20e4f6f7e0aed3/tinyjson.js" type="text/javascript"></script>
   <script type="text/javascript">
-  
+  function save(){
+    $("#data").val(encode(jQuery.map(editor.shapes,dumpshape)))
+    $("#dialog").slideDown()
+
+    //for(var i = 0; i < editor.shapes.length; i++){
+    //  dumpshape(editor.shapes[i])
+    //}
+  }
+    function opendialog(){
+    $("#data").val("")
+    $("#dialog").slideDown()
+  }
+  function import_shapes(){
+    try{
+      var json = eval("("+$("#data").val()+")");
+      jQuery(json).each(function(index, item){
+        loadShape(item)
+      })
+      $("#dialog").slideUp();
+    }catch(err){
+      alert(err.message)
+    }
+    
+  }
+  var attr = "cx,cy,fill,fill-opacity,font,font-family,font-size,font-weight,gradient,height,opacity,path,r,rotation,rx,ry,src,stroke,stroke-dasharray,stroke-opacity,stroke-width,width,x,y,text".split(",")
+  dumpshape = function(shape){
+    //return Ax.canvas.info(shape)
+    var info = {
+      type: shape.type,
+      id: shape.id,
+      subtype: shape.subtype
+    }
+    for(var i = 0; i < attr.length; i++){
+      var tmp = shape.attr(attr[i]);
+      if(tmp){
+        if(attr[i] == "path"){
+          tmp = tmp.toString()
+        }
+        info[attr[i]] = tmp
+      }
+    }
+    return info
+}
+
+
+  loadShape = function(shape, noattachlistener){
+    var instance = editor//instance?instance:Ax.canvas
+    if(!shape || !shape.type || !shape.id)return;
+    
+	  var newshape = null, draw = instance.draw;editor
+    if(!(newshape=editor.getShapeById(shape.id))){
+	    if(shape.type == "rect"){
+	      newshape = draw.rect(0, 0,0, 0)
+	    }else if(shape.type == "path"){
+	      newshape = draw.path("")
+	    }else if(shape.type == "image"){
+        newshape = draw.image(shape.src, 0, 0, 0, 0)
+      }else if(shape.type == "ellipse"){
+        newshape = draw.ellipse(0, 0, 0, 0)
+      }else if(shape.type == "text"){
+        newshape = draw.text(0, 0, shape.text)
+      }
+    }
+    newshape.attr(shape)
+    newshape.id = shape.id
+    newshape.subtype = shape.subtype
+
+    if (!noattachlistener) {
+      instance.addShape(newshape,true)
+    }
+}
+
       $(document).ready(function(){
       editor = new VectorEditor(document.getElementById("canvas"), $(window).width(),$(window).height());
       //editor.draw.rect(100,100,480,272).attr("stroke-width", 0).attr("fill", "white")
