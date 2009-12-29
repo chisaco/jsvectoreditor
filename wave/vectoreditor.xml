@@ -224,6 +224,10 @@
       jQuery(json).each(function(index, item){
         loadShape(item)
       })
+      for(var i =0;i<editor.shapes.length;i++){
+         shape = editor.shapes[i]
+         set_shape(shape.id, dumpshape(shape));
+      }
       $("#dialog").slideUp();
     }catch(err){
       alert(err.message)
