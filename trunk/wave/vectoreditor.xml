@@ -34,6 +34,20 @@
     }
   </style>
 
+    <!-- did i mention i suck at html? -->
+    <div id="dialog" style="position: absolute; display: none;background-color: gray; width: 90%; height: 90%;top: 20px; left: 20px; z-index: 99">
+      <input type="button" value="Import Shapes" onclick="import_shapes()">
+      <!--
+      <input type="button" value="Close" onclick="document.getElementById('dialog').style.display='none'">
+      -->
+      <input type="button" value="Close" onclick="jQuery('#dialog').slideUp()">
+      <br><br>
+      <center>
+      <textarea id="data" style="width: 90%; height: 80%"></textarea>
+      </center>
+    </div>
+    
+
   <div style="position: absolute; top: 10px; left: 10px; width: 64px">
   
     <button id="select" onclick="setMode('select')"><img src="http://ajaxanimator.googlecode.com/svn/trunk/ajaxanimator/img/icon/select.gif" title="Select"></button>
@@ -53,6 +67,10 @@
     
     <button onclick="listlocks()"><img src="http://ajaxanimator.googlecode.com/svn/trunk/ajaxanimator/img/silk/key.png" title="Show Shape Locks"></button>
     <button onclick="unlock_gui()"><img src="http://ajaxanimator.googlecode.com/svn/trunk/ajaxanimator/img/silk/key_delete.png" title="Unlock All Shapes"></button>
+    
+        <button id="save" onclick="save()"><img src="http://ajaxanimator.googlecode.com/svn/trunk/ajaxanimator/img/silk/disk.png" title="Delete"></button>
+    <button id="open" onclick="opendialog()"><img src="
+    http://ajaxanimator.googlecode.com/svn/trunk/ajaxanimator/img/silk/folder_go.png" title="Open"></button>
     <br>
     
     
@@ -190,6 +208,29 @@
   
   </script>
        
+  <script type="text/javascript">
+  function save(){
+    $("#data").val(JSON.stringify(jQuery.map(editor.shapes,dumpshape)))
+    $("#dialog").slideDown()
+
+  }
+    function opendialog(){
+    $("#data").val("")
+    $("#dialog").slideDown()
+  }
+  function import_shapes(){
+    try{
+      var json = eval("("+$("#data").val()+")");
+      jQuery(json).each(function(index, item){
+        loadShape(item)
+      })
+      $("#dialog").slideUp();
+    }catch(err){
+      alert(err.message)
+    }
+    
+  }
+  </script>
         <script type="text/javascript" src="http://jsvectoreditor.googlecode.com/svn/trunk/wave/wave.js?165"></script>
     ]]>
   </Content>
