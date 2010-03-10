@@ -269,7 +269,8 @@ function garbagecollect(){
     var instance = editor//instance?instance:Ax.canvas
     if(!shape || !shape.type || !shape.id)return;
     
-	  var newshape = null, draw = instance.draw;editor
+	  var newshape = null, draw = instance.draw, is_created;
+	  //editor
     if(!(newshape=editor.getShapeById(shape.id))){
 	  if(shape.type == "rect"){
 	    newshape = draw.rect(0, 0,0, 0)
@@ -282,6 +283,8 @@ function garbagecollect(){
     }else if(shape.type == "text"){
       newshape = draw.text(0, 0, shape.text)
     }
+    }else{
+      is_created = true
     }
     
     var nobj = {}
@@ -292,7 +295,7 @@ function garbagecollect(){
       }
     }
 	  if(newshape){
-      if(!animate){
+      if(!animate && !is_created){
         newshape.animate(nobj, 314,function(){
             newshape.attr(shape)
         })
