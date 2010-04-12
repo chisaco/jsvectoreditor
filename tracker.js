@@ -136,7 +136,22 @@ VectorEditor.prototype.trackerBox = function(x, y, action){
     if(this.paper && this.paper.editor)
       this.paper.editor.action = action;
     
-  })
+  });
+  var othis = this;
+  if(mobilesafari){
+	shape.node.addEventListener("touchstart", function(e){
+			othis.action = action;
+			e.preventDefault();
+			return false
+	}, false)
+	shape.node.addEventListener("touchmove", function(e){
+			e.preventDefault();
+			return false;
+	}, false)
+	shape.node.addEventListener("touchend", function(e){
+		e.preventDefault()
+	}, false)
+  }
   shape.node.is_tracker = true;
   return shape;
 }
