@@ -1,4 +1,4 @@
-
+var mobilesafari = /AppleWebKit.*Mobile/.test(navigator.userAgent);
 function VectorEditor(elem, width, height){
   if (typeof(Raphael) != "function") { //check for the renderer
       return alert("Error! Renderer is Missing!"); //if renderer isn't there, return false;
@@ -116,6 +116,25 @@ function VectorEditor(elem, width, height){
       event.preventDefault()
       this.onDblClick(event.clientX - offset()[0], event.clientY - offset()[1], event.target)
     }, this));
+    if(mobilesafari){
+    elem.addEventListener("touchstart", bind(function(event){
+      event.preventDefault()
+      this.onMouseDown(event.touches[0].pageX - offset()[0], event.touches[0].pageY - offset()[1], event.target)
+    }, this) ,false)
+    
+    elem.addEventListener("touchmove", bind(function(event){
+      event.preventDefault()
+      this.onMouseMove(event.touches[0].pageX - offset()[0], event.touches[0].pageY - offset()[1], event.target)
+    }, this), false);
+    elem.addEventListener("touchend", bind(function(event){
+      event.preventDefault()
+      this.onMouseUp(0, 0, event.target)
+    }, this), false);
+	elem.addEventListener("selectstart", function(event){
+      event.preventDefault()
+	  return false
+    }, false);
+   }
   }
 }
 
